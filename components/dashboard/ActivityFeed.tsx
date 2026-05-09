@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, WifiOff, Zap, CheckCircle2, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppStore } from "@/store/appStore";
 
 interface FeedItem {
   id: string;
@@ -18,39 +19,94 @@ const ICON_MAP = {
   camera:   { icon: Camera,        color: "text-blue-400",   bg: "bg-blue-400/10"   },
 };
 
-const SEED: FeedItem[] = [
-  { id: "f1", type: "report",   message: "Laporan baru: Kecelakaan di Simpang Pedan",            time: "2 mnt lalu"  },
-  { id: "f2", type: "offline",  message: "ESP32-CAM Simpang Prambanan tidak merespons",          time: "5 mnt lalu"  },
-  { id: "f3", type: "outage",   message: "Pemadaman terdeteksi: Lampu Jl. Merbabu",              time: "12 mnt lalu" },
-  { id: "f4", type: "resolved", message: "Laporan Jalan Rusak Jl. Gatot Subroto diselesaikan",   time: "18 mnt lalu" },
-  { id: "f5", type: "report",   message: "Laporan baru: Banjir di Jl. Pemuda",                   time: "25 mnt lalu" },
-  { id: "f6", type: "camera",   message: "Kamera Alun-Alun kembali online",                      time: "31 mnt lalu" },
-  { id: "f7", type: "offline",  message: "ZoSS SDN Klaten Tengah offline",                       time: "44 mnt lalu" },
-  { id: "f8", type: "report",   message: "Laporan baru: Kondisi Berbahaya Jl. Solo–Yogya",       time: "1 jam lalu"  },
-];
-
-const LIVE_POOL: Omit<FeedItem, "id" | "time">[] = [
-  { type: "report",   message: "Laporan baru: Hambatan Jalan di Jl. Ceper" },
-  { type: "offline",  message: "Traffic Light Jl. Solo tidak merespons" },
-  { type: "resolved", message: "Laporan Kecelakaan Simpang Pedan diselesaikan" },
-  { type: "outage",   message: "Pemadaman terdeteksi: Lampu Jl. Pemuda" },
-];
+function timeAgo(iso: string): string {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60)   return `${s} dtk lalu`;
+  if (s < 3600) return `${Math.floor(s / 60)} mnt lalu`;
+  if (s < 86400) return `${Math.floor(s / 3600)} jam lalu`;
+  return `${Math.floor(s / 86400)} hari lalu`;
+}
 
 export default function ActivityFeed() {
-  const [items, setItems] = useState<FeedItem[]>(SEED);
+  const { reports, devices } = useAppStore();
+  const [items, setItems] = useState<FeedItem[]>([]);
 
   useEffect(() => {
-    let idx = 0;
-    const t = setInterval(() => {
-      const base = LIVE_POOL[idx % LIVE_POOL.length];
-      idx++;
-      setItems((prev) => [
-        { ...base, id: `live-${Date.now()}`, time: "Baru saja" },
-        ...prev,
-      ].slice(0, 20));
-    }, 12_000);
-    return () => clearInterval(t);
-  }, []);
+    const feed: FeedItem[] = [];
+
+    // Build feed items from real reports (newest first)
+    const sorted = [...reports].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    sorted.slice(0, 10).forEach((r) => {
+      if (r.status === "resolved") {
+        feed.push({
+          id: `resolved-${r.id}`,
+          type: "resolved",
+          message: `Laporan ${r.type} di ${r.location.split(",")[0]} diselesaikan`,
+          time: timeAgo(r.statusHistory?.find((h) => h.status === "resolved")?.timestamp ?? r.timestamp),
+        });
+      } else {
+        feed.push({
+          id: `report-${r.id}`,
+          type: "report",
+          message: `Laporan baru: ${r.type} — ${r.location.split(",")[0]}`,
+          time: timeAgo(r.timestamp),
+        });
+      }
+    });
+
+    // Offline devices
+    devices
+      .filter((d) => d.status === "offline")
+      .slice(0, 5)
+      .forEach((d) => {
+        const isOutage = d.type === "lamp";
+        feed.push({
+          id: `device-${d.id}`,
+          type: isOutage ? "outage" : d.type === "camera" ? "camera" : "offline",
+          message: isOutage
+            ? `Pemadaman terdeteksi: ${d.name}`
+            : `${d.name} tidak merespons`,
+          time: timeAgo(d.lastSeen),
+        });
+      });
+
+    // Active cameras
+    devices
+      .filter((d) => d.type === "camera" && d.status === "active")
+      .slice(0, 3)
+      .forEach((d) => {
+        feed.push({
+          id: `cam-${d.id}`,
+          type: "camera",
+          message: `${d.name} online`,
+          time: timeAgo(d.lastSeen),
+        });
+      });
+
+    // Sort by recency (items with "dtk" first, then "mnt", etc.)
+    feed.sort((a, b) => {
+      const rank = (t: string) => {
+        if (t.includes("dtk")) return 0;
+        if (t.includes("mnt")) return 1;
+        if (t.includes("jam")) return 2;
+        return 3;
+      };
+      return rank(a.time) - rank(b.time);
+    });
+
+    setItems(feed.slice(0, 15));
+  }, [reports, devices]);
+
+  if (items.length === 0) {
+    return (
+      <div className="flex items-center justify-center flex-1 text-gray-600 text-xs py-6">
+        Belum ada aktivitas
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2 overflow-y-auto flex-1 min-h-0">

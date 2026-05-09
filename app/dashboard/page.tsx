@@ -4,8 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   AlertTriangle, Cpu, WifiOff, CheckCircle2, Activity,
-  FileText, Map, Settings, ChevronRight,
-  TrendingUp, Clock, RefreshCw, Shield, LogOut,
+  FileText, Map, ChevronRight,
+  TrendingUp, Clock, RefreshCw, Shield, LogOut, BookOpen,
 } from "lucide-react";
 import { useReports } from "@/hooks/useReports";
 import { useDevices } from "@/hooks/useDevices";
@@ -19,28 +19,40 @@ const fadeUp = {
   show: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.07, duration: 0.4 } }),
 };
 
-// ── Top events this week (static mock) ────────────────────────────
-const TOP_EVENTS = [
-  { type: "Kecelakaan",        count: 14, color: "text-red-400",    bar: "bg-red-500"    },
-  { type: "Jalan Rusak",       count: 9,  color: "text-orange-400", bar: "bg-orange-500" },
-  { type: "Banjir",            count: 6,  color: "text-blue-400",   bar: "bg-blue-500"   },
-  { type: "Hambatan Jalan",    count: 4,  color: "text-yellow-400", bar: "bg-yellow-400" },
-  { type: "Kondisi Berbahaya", count: 2,  color: "text-purple-400", bar: "bg-purple-500" },
-];
-const MAX_COUNT = TOP_EVENTS[0].count;
+const TYPE_COLORS: Record<string, { color: string; bar: string }> = {
+  "Kecelakaan":        { color: "text-red-400",    bar: "bg-red-500"    },
+  "Jalan Rusak":       { color: "text-orange-400", bar: "bg-orange-500" },
+  "Hambatan Jalan":    { color: "text-yellow-400", bar: "bg-yellow-400" },
+  "Kondisi Berbahaya": { color: "text-purple-400", bar: "bg-purple-500" },
+  "Pemadaman":         { color: "text-cyan-400",   bar: "bg-cyan-500"   },
+};
 
 // ── Quick nav links ────────────────────────────────────────────────
 const QUICK_LINKS = [
-  { href: "/dashboard/reports",  icon: FileText,  label: "Laporan",   sub: "Kelola semua laporan"   },
-  { href: "/dashboard/devices",  icon: Cpu,       label: "Perangkat", sub: "Status & konfigurasi"   },
-  { href: "/dashboard/analytics",icon: TrendingUp,label: "Analitik",  sub: "Grafik & statistik"     },
-  { href: "/dashboard/history",  icon: Clock,     label: "Riwayat",   sub: "Log aktivitas sistem"   },
+  { href: "/dashboard/reports",   icon: FileText,  label: "Laporan",   sub: "Kelola semua laporan"   },
+  { href: "/dashboard/devices",   icon: Cpu,       label: "Perangkat", sub: "Status & konfigurasi"   },
+  { href: "/dashboard/analytics", icon: TrendingUp,label: "Analitik",  sub: "Grafik & statistik"     },
+  { href: "/dashboard/history",   icon: Clock,     label: "Riwayat",   sub: "Log aktivitas sistem"   },
+  { href: "/dashboard/education", icon: BookOpen,  label: "Edukasi",   sub: "Poster & kuis"          },
 ];
 
 export default function DashboardPage() {
   const { reports, todayCount, resolvedCount } = useReports();
   const { devices, activeCount, systemStatus } = useDevices();
   const { user, logout } = useAuth();
+
+  // Compute top incident types from real reports
+  const typeCountMap: Record<string, number> = {};
+  reports.forEach((r) => { typeCountMap[r.type] = (typeCountMap[r.type] ?? 0) + 1; });
+  const TOP_EVENTS = Object.entries(typeCountMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([type, count]) => ({
+      type, count,
+      color: TYPE_COLORS[type]?.color ?? "text-gray-400",
+      bar:   TYPE_COLORS[type]?.bar   ?? "bg-gray-500",
+    }));
+  const MAX_COUNT = TOP_EVENTS[0]?.count ?? 1;
 
   const unverified  = reports.filter((r) => r.status === "pending").length;
   const offlineCount = devices.filter((d) => d.status === "offline").length;
@@ -71,7 +83,6 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <RefreshCw size={11} className="animate-spin" style={{ animationDuration: "4s" }} />
-              <span className="hidden sm:inline">Live</span>
             </div>
             {user && (
               <span className="hidden sm:inline text-xs text-gray-500 truncate max-w-[140px]">{user.email}</span>
@@ -157,14 +168,9 @@ export default function DashboardPage() {
               transition={{ delay: 0.35 }}
               className="flex-1 min-h-0 bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3 overflow-hidden"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <Activity size={14} className="text-green-400" />
-                  Aktivitas Real-Time
-                </div>
-                <span className="flex items-center gap-1 text-[10px] text-green-400 font-semibold">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" /> Live
-                </span>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Activity size={14} className="text-green-400" />
+                Aktivitas Real-Time
               </div>
               <ActivityFeed />
             </motion.div>
@@ -240,7 +246,7 @@ export default function DashboardPage() {
         {/* ══════════════════════════════════════════════════════════
             QUICK NAV
         ══════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {QUICK_LINKS.map((l, i) => (
             <motion.div
               key={l.href}

@@ -25,12 +25,6 @@ body {
   height: 100vh; /* fallback */
 }
 
-/* Ensure leaflet map fills its container on all screen sizes */
-.leaflet-container {
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .leaflet-container {
   background: #e8e0d8;
 }

@@ -6,7 +6,7 @@ import {
   AlertTriangle, CheckCircle2, Database, Sheet, HardDrive,
   Filter, ChevronDown, Image as ImageIcon, SlidersHorizontal,
 } from "lucide-react";
-import { rtdb, ref, onValue, off } from "@/lib/firebase";
+import { rtdb, ref, onValue, off, signIn } from "@/lib/firebase";
 import { fetchFromSheet, SheetRow } from "@/lib/sheets";
 import { formatDate } from "@/lib/utils";
 import { Report } from "@/store/appStore";
@@ -14,7 +14,7 @@ import { Report } from "@/store/appStore";
 // ── Source tag ─────────────────────────────────────────────────────
 type Source = "local" | "firebase" | "sheets";
 
-interface HistoryEntry extends Partial<Report> {
+interface HistoryEntry {
   id: string;
   timestamp: string;
   type: string;
@@ -25,8 +25,13 @@ interface HistoryEntry extends Partial<Report> {
   imageUrl?: string;
   name?: string;
   phone?: string;
+  lat?: number;
+  lng?: number;
   source: Source;
   statusHistory?: { status: string; note: string; timestamp: string }[];
+  notes?: string[];
+  response?: string;
+  [key: string]: unknown;
 }
 
 // ── Badge helpers ──────────────────────────────────────────────────
@@ -116,8 +121,68 @@ function SevDropdown({ value, onChange }: { value: SevFilter; onChange: (v: SevF
   );
 }
 
+// ── IoT detail renderer ────────────────────────────────────────────
+function IoTDetail({ entry }: { entry: HistoryEntry }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const raw = entry as any;
+  const sections: { label: string; color: string; rows: [string, string][] }[] = [];
+
+  if (raw["road-lamp"]) {
+    const rl = raw["road-lamp"];
+    sections.push({ label: "Road Lamp", color: "text-yellow-400", rows: [
+      ["Cahaya",    rl.light_status ?? "—"],
+      ["Kecepatan", `${rl.speed_mph?.toFixed(2) ?? 0} mph`],
+      ["Ngebut",    rl.speeding ? "Ya" : "Tidak"],
+      ["LED",       rl.led_status || "—"],
+      ["Buzzer",    rl.buzzer_status || "—"],
+    ]});
+  }
+  if (raw["traffic-light"]) {
+    const tl = raw["traffic-light"];
+    sections.push({ label: "Traffic Light", color: "text-green-400", rows: [
+      ["Lampu",     tl.light_status ?? "—"],
+      ["Kecepatan", `${tl.speed_kpj ?? 0} km/h`],
+      ["Ngebut",    tl.speeding ? "Ya" : "Tidak"],
+      ["Tombol",    String(tl.button_status ?? "—")],
+    ]});
+  }
+  if (raw.zoss) {
+    const z = raw.zoss;
+    sections.push({ label: "ZoSS", color: "text-blue-400", rows: [
+      ["Tombol",    z.button_status ?? "—"],
+      ["LED",       z.led_color ?? "—"],
+      ["Kecepatan", `${z.speed_kpj ?? 0} km/h`],
+      ["Ngebut",    z.ngebut ? "Ya" : "Tidak"],
+      ["Buzzer",    String(z.buzzer_status ?? "—")],
+    ]});
+  }
+
+  if (sections.length === 0) {
+    return <p className="text-xs text-gray-400 bg-white/5 rounded-xl p-3">{entry.description || "—"}</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {sections.map((sec) => (
+        <div key={sec.label} className="bg-white/5 rounded-xl p-3">
+          <p className={`text-[11px] font-bold mb-2 ${sec.color}`}>{sec.label}</p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            {sec.rows.map(([k, v]) => (
+              <div key={k} className="flex items-center justify-between text-xs">
+                <span className="text-gray-500">{k}</span>
+                <span className="text-gray-200 font-medium">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Detail Modal ───────────────────────────────────────────────────
 function DetailModal({ entry, onClose }: { entry: HistoryEntry; onClose: () => void }) {
+  const iot = entry.type === "Data Sensor IoT";
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <motion.div
@@ -130,8 +195,8 @@ function DetailModal({ entry, onClose }: { entry: HistoryEntry; onClose: () => v
           <div className="flex items-center gap-2 flex-wrap">
             <FileText size={15} className="text-orange-400" />
             <span className="font-semibold text-sm">{entry.type}</span>
-            <SevBadge s={entry.severity} />
-            <StaBadge s={entry.status} />
+            {!iot && <SevBadge s={entry.severity} />}
+            {!iot && <StaBadge s={entry.status} />}
             <SrcBadge s={entry.source} />
           </div>
           <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors ml-2"><X size={16} /></button>
@@ -141,18 +206,22 @@ function DetailModal({ entry, onClose }: { entry: HistoryEntry; onClose: () => v
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div><p className="text-gray-500 mb-0.5">ID</p><p className="font-mono text-gray-300 break-all text-[10px]">{entry.id}</p></div>
             <div><p className="text-gray-500 mb-0.5">Waktu</p><p className="text-gray-300">{formatDate(entry.timestamp)}</p></div>
-            <div className="col-span-2">
-              <p className="text-gray-500 mb-0.5">Lokasi</p>
-              <p className="text-gray-300 flex items-center gap-1"><MapPin size={10} />{entry.location}</p>
-            </div>
+            {!iot && (
+              <div className="col-span-2">
+                <p className="text-gray-500 mb-0.5">Lokasi</p>
+                <p className="text-gray-300 flex items-center gap-1"><MapPin size={10} />{entry.location}</p>
+              </div>
+            )}
             {entry.name && <div><p className="text-gray-500 mb-0.5">Pelapor</p><p className="text-gray-300">{entry.name}</p></div>}
             {entry.phone && <div><p className="text-gray-500 mb-0.5">Telepon</p><p className="text-gray-300">{entry.phone}</p></div>}
-            {entry.description && (
+            {!iot && entry.description && (
               <div className="col-span-2"><p className="text-gray-500 mb-0.5">Deskripsi</p><p className="text-gray-300">{entry.description}</p></div>
             )}
           </div>
 
-          {entry.imageUrl && (
+          {iot && <IoTDetail entry={entry} />}
+
+          {!iot && entry.imageUrl && (
             <div>
               <p className="text-xs text-gray-500 mb-2 flex items-center gap-1"><ImageIcon size={11} /> Bukti Foto</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -160,7 +229,7 @@ function DetailModal({ entry, onClose }: { entry: HistoryEntry; onClose: () => v
             </div>
           )}
 
-          {entry.statusHistory && entry.statusHistory.length > 0 && (
+          {!iot && entry.statusHistory && entry.statusHistory.length > 0 && (
             <div>
               <p className="text-xs text-gray-500 mb-2 font-medium">Riwayat Status</p>
               <div className="space-y-1.5">
@@ -178,6 +247,37 @@ function DetailModal({ entry, onClose }: { entry: HistoryEntry; onClose: () => v
       </motion.div>
     </div>
   );
+}
+
+// ── IoT normaliser helpers ────────────────────────────────────────
+interface FirebaseSnapshot {
+  "road-lamp"?:    { button_status?: string; buzzer_status?: string; led_status?: string; light_status?: string; speeding?: boolean; speed_mph?: number };
+  "traffic-light"?:{ button_status?: boolean; light_status?: string; speeding?: boolean; speed_kpj?: number };
+  zoss?:           { button_status?: string; buzzer_status?: boolean; led_color?: string; ngebut?: boolean; speed_kpj?: number };
+}
+
+function normaliseFirebaseSnapshot(val: FirebaseSnapshot, key: string): HistoryEntry {
+  const snap = val as FirebaseSnapshot;
+  const rl  = snap["road-lamp"];
+  const tl  = snap["traffic-light"];
+  const zoss = snap.zoss;
+  const parts: string[] = [];
+  if (rl)   parts.push(`RL: ${rl.light_status ?? "—"}, ${rl.speed_mph?.toFixed(1) ?? 0} mph`);
+  if (tl)   parts.push(`TL: ${tl.light_status ?? "—"}, ${tl.speed_kpj ?? 0} km/h`);
+  if (zoss) parts.push(`ZoSS: ${zoss.button_status ?? "—"}, LED ${zoss.led_color ?? "—"}`);
+  return {
+    id:          `fb-${key}`,
+    timestamp:   new Date().toISOString(),
+    type:        "Data Sensor IoT",
+    location:    "—",
+    severity:    "low",
+    status:      "resolved",
+    description: parts.join(" | ") || "—",
+    source:      "firebase",
+    // keep raw sub-objects for detail modal
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(val as any),
+  };
 }
 
 // ── Merge helper ───────────────────────────────────────────────────
@@ -323,7 +423,7 @@ export default function DashboardHistoryPage() {
       const res = await fetch("/api/report");
       const data = await res.json();
       if (data.ok) {
-        localEntries = (data.reports as Record<string, unknown>[]).map((r) => ({
+        localEntries = (data.reports as unknown[]).map((r) => ({
           ...(r as HistoryEntry),
           source: "local" as Source,
         }));
@@ -336,17 +436,10 @@ export default function DashboardHistoryPage() {
     let sheetEntries: HistoryEntry[] = [];
     try {
       const rows: SheetRow[] = await fetchFromSheet();
-      sheetEntries = rows.map((r, i) => ({
-        id:          r.id ?? `sheet-${i}-${r.timestamp}`,
-        timestamp:   r.timestamp ?? new Date().toISOString(),
-        type:        r.type ?? "—",
-        location:    r.location ?? "—",
-        severity:    r.severity ?? "low",
-        status:      r.status ?? "pending",
-        description: r.description,
-        name:        r.name,
-        phone:       r.phone,
-        source:      "sheets" as Source,
+      // fetchFromSheet already normalises IoT rows via normaliseSheetRow
+      sheetEntries = rows.map((r) => ({
+        ...(r as unknown as HistoryEntry),
+        source: "sheets" as Source,
       }));
     } catch {
       errs.push("Gagal memuat data Google Sheets.");
@@ -361,27 +454,71 @@ export default function DashboardHistoryPage() {
     setLoading(false);
   }, []);
 
-  // ── Firebase real-time subscription ───────────────────────────────
+  // ── Firebase real-time subscription (sign in first) ──────────────
   useEffect(() => {
-    const dbRef = ref(rtdb, "reports");
-    const unsub = onValue(dbRef, (snapshot) => {
-      const val = snapshot.val();
-      if (!val) return;
-      const fbEntries: HistoryEntry[] = Object.entries(val).map(([key, v]) => ({
-        ...(v as HistoryEntry),
-        id: (v as HistoryEntry).id ?? key,
-        source: "firebase" as Source,
-      }));
-      setEntries((prev) => {
-        const others = prev.filter((e) => e.source !== "firebase");
-        const local  = others.filter((e) => e.source === "local");
-        const sheets = others.filter((e) => e.source === "sheets");
-        return mergeEntries(local, fbEntries, sheets);
+    const email    = process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMAIL    ?? "";
+    const password = process.env.NEXT_PUBLIC_FIREBASE_AUTH_PASSWORD ?? "";
+
+    let dbRef: ReturnType<typeof ref> | null = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let unsub: any = null;
+
+    const subscribe = () => {
+      dbRef = ref(rtdb, "/");
+      unsub = onValue(dbRef, (snapshot) => {
+        const val = snapshot.val();
+        if (!val) return;
+
+        const fbEntries: HistoryEntry[] = [];
+
+        // IoT device snapshot at root: { "road-lamp": {...}, "traffic-light": {...}, zoss: {...} }
+        const isIoTSnapshot = val["road-lamp"] || val["traffic-light"] || val["zoss"];
+        if (isIoTSnapshot) {
+          fbEntries.push(normaliseFirebaseSnapshot(val as FirebaseSnapshot, Date.now().toString()));
+        }
+
+        // Legacy: flat map of report objects under /reports
+        if (val.reports && typeof val.reports === "object") {
+          Object.entries(val.reports as Record<string, unknown>).forEach(([key, v]) => {
+            const r = v as HistoryEntry;
+            fbEntries.push({ ...r, id: r.id ?? key, source: "firebase" });
+          });
+        }
+
+        // Fallback: root is a flat map of report objects
+        if (!isIoTSnapshot && !val.reports) {
+          Object.entries(val as Record<string, unknown>).forEach(([key, v]) => {
+            const r = v as HistoryEntry;
+            if (r && typeof r === "object") {
+              fbEntries.push({ ...r, id: r.id ?? key, source: "firebase" });
+            }
+          });
+        }
+
+        setEntries((prev) => {
+          const others = prev.filter((e) => e.source !== "firebase");
+          const local  = others.filter((e) => e.source === "local");
+          const sheets = others.filter((e) => e.source === "sheets");
+          return mergeEntries(local, fbEntries, sheets);
+        });
+      }, () => {
+        setErrors((e) => [...e, "Gagal memuat data Firebase."]);
       });
-    }, () => {
-      setErrors((e) => [...e, "Gagal memuat data Firebase."]);
-    });
-    return () => off(dbRef, "value", unsub);
+    };
+
+    if (email && password) {
+      signIn(email, password)
+        .then(subscribe)
+        .catch(() => {
+          setErrors((e) => [...e, "Gagal autentikasi Firebase."]);
+        });
+    } else {
+      subscribe();
+    }
+
+    return () => {
+      if (dbRef && unsub) off(dbRef, "value", unsub);
+    };
   }, []);
 
   useEffect(() => { load(); }, [load]);

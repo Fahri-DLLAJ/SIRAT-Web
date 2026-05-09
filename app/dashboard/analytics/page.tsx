@@ -192,10 +192,7 @@ export default function DashboardAnalyticsPage() {
             </div>
             <h1 className="text-lg sm:text-xl font-extrabold">Statistik & Evaluasi</h1>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <RefreshCw size={11} className="animate-spin" style={{ animationDuration: "4s" }} />
-            <span className="hidden sm:inline">Live</span>
-          </div>
+
         </div>
       </div>
 

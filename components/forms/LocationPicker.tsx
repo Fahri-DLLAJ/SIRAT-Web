@@ -36,6 +36,7 @@ export default function LocationPicker({ lat, lng, onChange }: Props) {
 
       const map = L.map(containerRef.current!, { center: KLATEN, zoom: 13 });
       mapRef.current = map;
+      setTimeout(() => map.invalidateSize(), 0);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors",
@@ -71,8 +72,8 @@ export default function LocationPicker({ lat, lng, onChange }: Props) {
   return (
     <div
       ref={containerRef}
-      className="w-full h-52 sm:h-64 rounded-2xl overflow-hidden border border-white/10"
-      style={{ isolation: "isolate" }}
+      className="w-full rounded-2xl overflow-hidden border border-white/10"
+      style={{ isolation: "isolate", height: "208px" }}
     />
   );
 }

@@ -180,10 +180,7 @@ export default function StatusPage() {
             </div>
             <h1 className="text-lg sm:text-xl font-extrabold">Status Jalan Real-Time</h1>
           </div>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <RefreshCw size={12} className="animate-spin" style={{ animationDuration: "3s" }} />
-            <span className="hidden sm:inline">Diperbarui otomatis</span>
-          </div>
+
         </div>
       </div>
 

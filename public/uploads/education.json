@@ -1,0 +1,126 @@
+{
+  "posters": [
+    {
+      "id": "p1",
+      "title": "Zona Selamat Sekolah",
+      "tag": "ZoSS",
+      "color": "from-cyan-600 to-cyan-800",
+      "icon": "🏫",
+      "imageUrl": "/uploads/poster-p1.png"
+    },
+    {
+      "id": "p2",
+      "title": "Bahaya Microsleep",
+      "tag": "Kelelahan",
+      "color": "from-purple-600 to-purple-800",
+      "icon": "😴",
+      "imageUrl": "/uploads/poster-p2.png"
+    },
+    {
+      "id": "p3",
+      "title": "Jarak Aman 3 Detik",
+      "tag": "Jarak",
+      "color": "from-green-600 to-green-800",
+      "icon": "🚗",
+      "imageUrl": "/uploads/poster-p3.png"
+    },
+    {
+      "id": "p4",
+      "title": "Aquaplaning",
+      "tag": "Hujan",
+      "color": "from-cyan-600 to-cyan-800",
+      "icon": "💧",
+      "imageUrl": "/uploads/poster-p4.png"
+    },
+    {
+      "id": "p5",
+      "title": "Blind Spot Truk",
+      "tag": "Titik Buta",
+      "color": "from-orange-600 to-orange-800",
+      "icon": "🚛",
+      "imageUrl": "/uploads/poster-p5.png"
+    },
+    {
+      "id": "p6",
+      "title": "Helm SNI Wajib",
+      "tag": "Helm",
+      "color": "from-yellow-600 to-yellow-800",
+      "icon": "⛑️",
+      "imageUrl": "/uploads/poster-p6.png"
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "q1",
+      "q": "Apa fungsi ZoSS (Zona Selamat Sekolah)?",
+      "options": [
+        "Area parkir khusus pelajar",
+        "Zona kecepatan rendah di sekitar sekolah untuk melindungi pelajar",
+        "Jalur bus sekolah",
+        "Area bermain anak di pinggir jalan"
+      ],
+      "answer": 1,
+      "explanation": "ZoSS adalah kawasan di sekitar sekolah dengan batas kecepatan 25 km/jam, dilengkapi rambu dan marka khusus untuk melindungi keselamatan pelajar."
+    },
+    {
+      "id": "q2",
+      "q": "Berapa jarak aman minimum yang disarankan saat berkendara di belakang kendaraan lain?",
+      "options": [
+        "1 detik",
+        "2 detik",
+        "3 detik",
+        "5 detik"
+      ],
+      "answer": 2,
+      "explanation": "Aturan 3 detik memberikan waktu reaksi yang cukup untuk berhenti jika kendaraan di depan tiba-tiba mengerem. Tambahkan 1 detik lagi saat hujan."
+    },
+    {
+      "id": "q3",
+      "q": "Apa yang dimaksud dengan aquaplaning?",
+      "options": [
+        "Berkendara di atas jembatan",
+        "Kehilangan traksi ban akibat lapisan air di permukaan jalan",
+        "Teknik mengemudi di jalan berlumpur",
+        "Sistem pengereman otomatis"
+      ],
+      "answer": 1,
+      "explanation": "Aquaplaning terjadi saat ban tidak mampu membuang air cukup cepat, sehingga kendaraan 'mengapung' di atas air dan kehilangan kendali."
+    },
+    {
+      "id": "q4",
+      "q": "Nomor darurat Polisi di Indonesia adalah?",
+      "options": [
+        "112",
+        "118",
+        "110",
+        "113"
+      ],
+      "answer": 2,
+      "explanation": "110 adalah nomor darurat Polisi. 118 untuk Ambulans, 113 untuk Pemadam Kebakaran, dan 112 adalah nomor darurat umum."
+    },
+    {
+      "id": "q5",
+      "q": "Kapan helm harus diganti meskipun tidak ada kerusakan terlihat?",
+      "options": [
+        "Setiap 1 tahun",
+        "Setiap 3–5 tahun",
+        "Setiap 10 tahun",
+        "Tidak perlu diganti"
+      ],
+      "answer": 1,
+      "explanation": "Material helm mengalami degradasi seiring waktu akibat panas, keringat, dan UV. Produsen merekomendasikan penggantian setiap 3–5 tahun."
+    },
+    {
+      "q": "Dasar hukum utama yang mengatur tentang kewajiban pengendara untuk berkendara dengan penuh konsentrasi, yang menjadi dasar larangan merokok, adalah",
+      "options": [
+        "UU No. 22 Tahun 2009 Pasal 106 Ayat (1)",
+        "UU No. 22 Tahun 2009 Pasal 283",
+        "Peraturan Pemerintah No. 109 Tahun 2012",
+        "Peraturan Menteri Perhubungan No. 12 Tahun 2019"
+      ],
+      "answer": 0,
+      "explanation": "Pasal ini mewajibkan setiap orang yang mengemudikan kendaraan bermotor di jalan untuk berkendara dengan wajar dan penuh konsentrasi.",
+      "id": "q1778125730968"
+    }
+  ]
+}

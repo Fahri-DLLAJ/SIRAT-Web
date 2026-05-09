@@ -96,9 +96,17 @@
     "lat": -7.7294374613200585,
     "lng": 110.70040941238405,
     "severity": "low",
-    "status": "pending",
+    "status": "resolved",
     "imageUrl": "/uploads/RPT-1777306007880-FV0KG-image.jpg",
-    "videoUrl": null
+    "videoUrl": null,
+    "statusHistory": [
+      {
+        "status": "resolved",
+        "note": "Laporan diselesaikan oleh admin.",
+        "timestamp": "2026-05-09T15:28:03.463Z"
+      }
+    ],
+    "hidden": false
   },
   {
     "id": "RPT-1777533228721-AAOT6",
@@ -121,5 +129,21 @@
         "timestamp": "2026-04-30T07:14:52.430Z"
       }
     ]
+  },
+  {
+    "id": "RPT-1778164707139-DBSHM",
+    "timestamp": "2026-05-07T14:38:27.139Z",
+    "name": "",
+    "phone": "",
+    "type": "Hambatan Jalan",
+    "description": "",
+    "location": "Jatinom,  Klaten,  Central Java",
+    "lat": -7.634946066583842,
+    "lng": 110.60129642486574,
+    "severity": "medium",
+    "status": "pending",
+    "imageUrl": null,
+    "videoUrl": null,
+    "hidden": false
   }
 ]

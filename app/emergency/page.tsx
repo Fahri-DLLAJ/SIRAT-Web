@@ -230,10 +230,7 @@ export default function EmergencyPage() {
             </div>
             <h1 className="text-lg sm:text-xl font-extrabold">Bantuan Darurat</h1>
           </div>
-          <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-1.5">
-            <span className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
-            <span className="text-red-400 text-xs font-semibold">Siaga 24 Jam</span>
-          </div>
+
         </div>
       </div>
 

@@ -69,16 +69,6 @@ export default function HomePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 py-24 grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-sm text-blue-400 mb-6"
-            >
-              <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-              Sistem Aktif — Monitoring Real-Time
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -95,7 +85,7 @@ export default function HomePage() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
               className="text-gray-400 text-lg mb-8 max-w-lg leading-relaxed"
             >
               S-Rotem mengintegrasikan kamera ESP32-CAM, sensor IoT, dan partisipasi masyarakat untuk memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time.
@@ -104,7 +94,7 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
               className="flex flex-wrap gap-3"
             >
               <Link
@@ -139,14 +129,10 @@ export default function HomePage() {
             className="hidden lg:block"
           >
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-900/20">
-              <div className="absolute top-3 left-3 z-10 bg-gray-950/80 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                Live Monitoring
-              </div>
               <MapPreview
                 center={[-7.7059, 110.6010]}
                 zoom={12}
-                height="h-80"
+                heightPx={320}
                 markers={[
                   { lat: -7.7059, lng: 110.6010, label: "Kecelakaan — Simpang Pedan" },
                   { lat: -7.7080, lng: 110.5980, label: "Banjir — Jl. Pemuda" },

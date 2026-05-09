@@ -19,6 +19,7 @@ export interface Report {
   imageUrl?: string;
   name?: string;
   phone?: string;
+  hidden?: boolean;
   statusHistory?: StatusHistoryEntry[];
   notes?: string[];
   response?: string;
@@ -31,28 +32,22 @@ export interface Device {
   lat: number;
   lng: number;
   status: "active" | "offline" | "pending";
-  /** Local network IP of the ESP32 device */
   ip?: string;
   lastSeen: string;
   description?: string;
 }
 
 interface AppState {
-  // ── Data ──────────────────────────────────────────────
   reports: Report[];
   devices: Device[];
   setReports: (reports: Report[]) => void;
   setDevices: (devices: Device[]) => void;
 
-  // ── Notifications ─────────────────────────────────────
   notifications: { id: string; message: string; read: boolean }[];
   addNotification: (message: string) => void;
   markAllRead: () => void;
 
-  // ── Active camera / stream ────────────────────────────
-  /** IP of the currently viewed ESP32-CAM */
   activeCameraIp: string | null;
-  /** Whether to show the AI-processed stream instead of raw MJPEG */
   showProcessedStream: boolean;
   setActiveCameraIp: (ip: string | null) => void;
   setShowProcessedStream: (v: boolean) => void;

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "d1",
+    "name": "Kamera Simpang Pedan",
+    "type": "camera",
+    "lat": -7.7059,
+    "lng": 110.601,
+    "status": "active",
+    "ip": "192.168.1.101",
+    "lastSeen": "2026-05-07T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d2",
+    "name": "Lampu Jalan Jl. Pemuda",
+    "type": "lamp",
+    "lat": -7.708,
+    "lng": 110.598,
+    "status": "active",
+    "ip": "192.168.1.102",
+    "lastSeen": "2026-05-07T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d3",
+    "name": "ZoSS SDN Klaten Tengah",
+    "type": "sensor",
+    "lat": -7.712,
+    "lng": 110.605,
+    "status": "offline",
+    "lastSeen": "2026-05-06T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d4",
+    "name": "Traffic Light Alun-Alun",
+    "type": "traffic-light",
+    "lat": -7.7065,
+    "lng": 110.6025,
+    "status": "active",
+    "ip": "192.168.1.104",
+    "lastSeen": "2026-05-07T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d5",
+    "name": "Kamera Simpang Prambanan",
+    "type": "camera",
+    "lat": -7.752,
+    "lng": 110.491,
+    "status": "active",
+    "ip": "192.168.1.105",
+    "lastSeen": "2026-05-07T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d7",
+    "name": "ZoSS SDN Ceper",
+    "type": "sensor",
+    "lat": -7.685,
+    "lng": 110.62,
+    "status": "active",
+    "ip": "192.168.1.107",
+    "lastSeen": "2026-05-07T14:00:00.000Z",
+    "description": ""
+  },
+  {
+    "id": "d8",
+    "name": "Lampu Jalan Jl. Merbabu",
+    "type": "lamp",
+    "lat": -7.701,
+    "lng": 110.608,
+    "status": "offline",
+    "lastSeen": "2026-05-07T13:00:00.000Z",
+    "description": ""
+  }
+]

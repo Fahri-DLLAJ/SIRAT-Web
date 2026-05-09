@@ -7,27 +7,19 @@ const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
 const REPORTS_FILE = path.join(UPLOADS_DIR, "reports.json");
 
 async function ensureDir() {
-  if (!existsSync(UPLOADS_DIR)) {
-    await mkdir(UPLOADS_DIR, { recursive: true });
-  }
+  if (!existsSync(UPLOADS_DIR)) await mkdir(UPLOADS_DIR, { recursive: true });
 }
 
 async function readReports(): Promise<Record<string, unknown>[]> {
-  try {
-    const raw = await readFile(REPORTS_FILE, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
+  try { return JSON.parse(await readFile(REPORTS_FILE, "utf-8")); }
+  catch { return []; }
 }
 
 export async function POST(req: NextRequest) {
   try {
     await ensureDir();
-
     const formData = await req.formData();
 
-    // ── Parse text fields ──────────────────────────────────────────────────
     const id        = `RPT-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
     const timestamp = new Date().toISOString();
 
@@ -43,31 +35,27 @@ export async function POST(req: NextRequest) {
       lng:         Number(formData.get("lng"))  || null,
       severity:    formData.get("severity")    ?? "medium",
       status:      "pending",
+      hidden:      false,
       imageUrl:    null,
       videoUrl:    null,
     };
 
-    // ── Save image ─────────────────────────────────────────────────────────
     const imageFile = formData.get("image") as File | null;
     if (imageFile && imageFile.size > 0) {
       const ext      = imageFile.name.split(".").pop() ?? "jpg";
       const filename = `${id}-image.${ext}`;
-      const buffer   = Buffer.from(await imageFile.arrayBuffer());
-      await writeFile(path.join(UPLOADS_DIR, filename), buffer);
+      await writeFile(path.join(UPLOADS_DIR, filename), Buffer.from(await imageFile.arrayBuffer()));
       report.imageUrl = `/uploads/${filename}`;
     }
 
-    // ── Save video ─────────────────────────────────────────────────────────
     const videoFile = formData.get("video") as File | null;
     if (videoFile && videoFile.size > 0) {
       const ext      = videoFile.name.split(".").pop() ?? "mp4";
       const filename = `${id}-video.${ext}`;
-      const buffer   = Buffer.from(await videoFile.arrayBuffer());
-      await writeFile(path.join(UPLOADS_DIR, filename), buffer);
+      await writeFile(path.join(UPLOADS_DIR, filename), Buffer.from(await videoFile.arrayBuffer()));
       report.videoUrl = `/uploads/${filename}`;
     }
 
-    // ── Append to reports.json ─────────────────────────────────────────────
     const reports = await readReports();
     reports.push(report);
     await writeFile(REPORTS_FILE, JSON.stringify(reports, null, 2), "utf-8");
@@ -79,11 +67,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
+/** Public GET — hidden reports are excluded (map, status page, home page) */
 export async function GET() {
   try {
     await ensureDir();
     const reports = await readReports();
-    return NextResponse.json({ ok: true, reports });
+    const visible = reports.filter((r) => !r.hidden);
+    return NextResponse.json({ ok: true, reports: visible });
   } catch {
     return NextResponse.json({ ok: false, reports: [] });
   }

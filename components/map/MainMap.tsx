@@ -87,6 +87,9 @@ export default function MainMap({ devices, reports, filters, onSelectDevice, onS
   const mapRef       = useRef<LeafletMap | null>(null);
   const markersRef   = useRef<Layer[]>([]);
   const heatRef      = useRef<Circle[]>([]);
+  // Keep latest props accessible inside the async init callback
+  const propsRef = useRef({ devices, reports, filters, onSelectDevice, onSelectReport });
+  useEffect(() => { propsRef.current = { devices, reports, filters, onSelectDevice, onSelectReport }; });
 
   // ── Init map once ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -119,6 +122,9 @@ export default function MainMap({ devices, reports, filters, onSelectDevice, onS
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(map);
+
+      // Render markers immediately after map is ready using latest props
+      renderMarkers(L, map, markersRef, heatRef, propsRef.current);
     });
 
     return () => {
@@ -129,67 +135,75 @@ export default function MainMap({ devices, reports, filters, onSelectDevice, onS
 
   // ── Re-render markers/heat when data or filters change ────────────────────
   useEffect(() => {
-    if (!mapRef.current) return;
-
+    if (!mapRef.current) return; // map not ready yet — init effect handles first render
     import("leaflet").then((L) => {
-      const map = mapRef.current!;
-
-      markersRef.current.forEach((l) => map.removeLayer(l));
-      heatRef.current.forEach((l)   => map.removeLayer(l));
-      markersRef.current = [];
-      heatRef.current    = [];
-
-      const all          = filters.includes("all");
-      const showReports  = all || filters.includes("reports");
-      const showDevices  = all || filters.includes("devices");
-      const showCameras  = all || filters.includes("cameras");
-      const showHeat     = all || filters.includes("highRisk");
-
-      // ── Heatmap ──────────────────────────────────────────────────────────
-      if (showHeat) {
-        reports.forEach((r) => {
-          const h = SEVERITY_HEAT[r.severity];
-          const c = L.circle([r.lat, r.lng], {
-            radius: h.radius, color: "transparent",
-            fillColor: h.color, fillOpacity: h.opacity,
-          }).addTo(map);
-          heatRef.current.push(c);
-        });
-      }
-
-      // ── Device markers ───────────────────────────────────────────────────
-      if (showDevices || showCameras) {
-        devices.forEach((d) => {
-          if (d.type === "camera" && !showCameras && !all) return;
-          if (d.type !== "camera" && !showDevices && !all) return;
-          const pin = DEVICE_PIN[d.type] ?? DEVICE_PIN.camera;
-          const m = L.marker([d.lat, d.lng], { icon: pinIcon(L, pin.emoji, pin.bg) })
-            .addTo(map)
-            .bindPopup(devicePopup(d), { maxWidth: 280, className: "" });
-          m.on("click", () => onSelectDevice(d));
-          markersRef.current.push(m);
-        });
-      }
-
-      // ── Report markers ───────────────────────────────────────────────────
-      if (showReports) {
-        reports.forEach((r) => {
-          const pin = REPORT_PIN[r.type] ?? REPORT_PIN.default;
-          const m = L.marker([r.lat, r.lng], { icon: pinIcon(L, pin.emoji, pin.bg) })
-            .addTo(map)
-            .bindPopup(reportPopup(r), { maxWidth: 280, className: "" });
-          m.on("click", () => onSelectReport(r));
-          markersRef.current.push(m);
-        });
-      }
+      renderMarkers(L, mapRef.current!, markersRef, heatRef, { devices, reports, filters, onSelectDevice, onSelectReport });
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [devices, reports, filters]);
 
-  // isolation:isolate creates a new stacking context so Leaflet's internal
-  // z-indexes (panes at 400, controls at 1000) are contained within this
-  // element and cannot bleed over the side panel or detail drawer.
   return <div ref={containerRef} className="w-full h-full" style={{ isolation: "isolate" }} />;
+}
+
+// ── Extracted render logic ─────────────────────────────────────────────────
+function renderMarkers(
+  L: typeof import("leaflet"),
+  map: import("leaflet").Map,
+  markersRef: React.MutableRefObject<Layer[]>,
+  heatRef: React.MutableRefObject<import("leaflet").Circle[]>,
+  { devices, reports, filters, onSelectDevice, onSelectReport }: {
+    devices: Device[];
+    reports: Report[];
+    filters: FilterLayer[];
+    onSelectDevice: (d: Device) => void;
+    onSelectReport: (r: Report) => void;
+  }
+) {
+  markersRef.current.forEach((l) => map.removeLayer(l));
+  heatRef.current.forEach((l)   => map.removeLayer(l));
+  markersRef.current = [];
+  heatRef.current    = [];
+
+  const all         = filters.includes("all");
+  const showReports = all || filters.includes("reports");
+  const showDevices = all || filters.includes("devices");
+  const showCameras = all || filters.includes("cameras");
+  const showHeat    = all || filters.includes("highRisk");
+
+  if (showHeat) {
+    reports.forEach((r) => {
+      const h = SEVERITY_HEAT[r.severity];
+      const c = L.circle([r.lat, r.lng], {
+        radius: h.radius, color: "transparent",
+        fillColor: h.color, fillOpacity: h.opacity,
+      }).addTo(map);
+      heatRef.current.push(c);
+    });
+  }
+
+  if (showDevices || showCameras) {
+    devices.forEach((d) => {
+      if (d.type === "camera" && !showCameras && !all) return;
+      if (d.type !== "camera" && !showDevices && !all) return;
+      const pin = DEVICE_PIN[d.type] ?? DEVICE_PIN.camera;
+      const m = L.marker([d.lat, d.lng], { icon: pinIcon(L, pin.emoji, pin.bg) })
+        .addTo(map)
+        .bindPopup(devicePopup(d), { maxWidth: 280, className: "" });
+      m.on("click", () => onSelectDevice(d));
+      markersRef.current.push(m);
+    });
+  }
+
+  if (showReports) {
+    reports.filter((r) => !r.hidden).forEach((r) => {
+      const pin = REPORT_PIN[r.type] ?? REPORT_PIN.default;
+      const m = L.marker([r.lat, r.lng], { icon: pinIcon(L, pin.emoji, pin.bg) })
+        .addTo(map)
+        .bindPopup(reportPopup(r), { maxWidth: 280, className: "" });
+      m.on("click", () => onSelectReport(r));
+      markersRef.current.push(m);
+    });
+  }
 }
 
 // ── Popup builders ─────────────────────────────────────────────────────────

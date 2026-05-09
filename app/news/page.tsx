@@ -206,10 +206,7 @@ export default function NewsPage() {
             </div>
             <h1 className="text-lg sm:text-xl font-extrabold">Update Terkini</h1>
           </div>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <RefreshCw size={12} className="animate-spin" style={{ animationDuration: "4s" }} />
-            <span className="hidden sm:inline">Diperbarui otomatis</span>
-          </div>
+
         </div>
       </div>
 
@@ -230,7 +227,7 @@ export default function NewsPage() {
               <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-b border-red-700/30 bg-red-900/20">
                 <Bell size={14} className="text-red-400 animate-pulse" />
                 <span className="text-red-300 text-xs font-bold uppercase tracking-wide">
-                  {alerts.length} Peringatan Prioritas Aktif
+                  Peringatan
                 </span>
               </div>
 

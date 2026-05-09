@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -19,6 +19,7 @@ import {
   Phone,
   FileText,
   ShieldAlert,
+  X,
 } from "lucide-react";
 
 // ── Safety Materials ──────────────────────────────────────────────
@@ -77,16 +78,6 @@ const CATEGORIES = [
   },
 ];
 
-// ── Digital Posters ───────────────────────────────────────────────
-const POSTERS = [
-  { id: 1, title: "Zona Selamat Sekolah", tag: "ZoSS", color: "from-blue-600 to-blue-800", icon: "🏫" },
-  { id: 2, title: "Bahaya Microsleep", tag: "Kelelahan", color: "from-purple-600 to-purple-800", icon: "😴" },
-  { id: 3, title: "Jarak Aman 3 Detik", tag: "Jarak", color: "from-green-600 to-green-800", icon: "🚗" },
-  { id: 4, title: "Aquaplaning", tag: "Hujan", color: "from-cyan-600 to-cyan-800", icon: "💧" },
-  { id: 5, title: "Blind Spot Truk", tag: "Titik Buta", color: "from-orange-600 to-orange-800", icon: "🚛" },
-  { id: 6, title: "Helm SNI Wajib", tag: "Helm", color: "from-yellow-600 to-yellow-800", icon: "⛑️" },
-];
-
 // ── Daily Tips ────────────────────────────────────────────────────
 const TIPS = [
   "Pelan-pelan di dekat sekolah.",
@@ -97,55 +88,6 @@ const TIPS = [
   "Istirahat setiap 2 jam dalam perjalanan jauh.",
   "Periksa rem kendaraan secara berkala.",
   "Gunakan jalur kiri untuk kendaraan lambat.",
-];
-
-// ── Mini Quiz ─────────────────────────────────────────────────────
-const QUIZ_QUESTIONS = [
-  {
-    q: "Apa fungsi ZoSS (Zona Selamat Sekolah)?",
-    options: [
-      "Area parkir khusus pelajar",
-      "Zona kecepatan rendah di sekitar sekolah untuk melindungi pelajar",
-      "Jalur bus sekolah",
-      "Area bermain anak di pinggir jalan",
-    ],
-    answer: 1,
-    explanation:
-      "ZoSS adalah kawasan di sekitar sekolah dengan batas kecepatan 25 km/jam, dilengkapi rambu dan marka khusus untuk melindungi keselamatan pelajar.",
-  },
-  {
-    q: "Berapa jarak aman minimum yang disarankan saat berkendara di belakang kendaraan lain?",
-    options: ["1 detik", "2 detik", "3 detik", "5 detik"],
-    answer: 2,
-    explanation:
-      "Aturan 3 detik memberikan waktu reaksi yang cukup untuk berhenti jika kendaraan di depan tiba-tiba mengerem. Tambahkan 1 detik lagi saat hujan.",
-  },
-  {
-    q: "Apa yang dimaksud dengan aquaplaning?",
-    options: [
-      "Berkendara di atas jembatan",
-      "Kehilangan traksi ban akibat lapisan air di permukaan jalan",
-      "Teknik mengemudi di jalan berlumpur",
-      "Sistem pengereman otomatis",
-    ],
-    answer: 1,
-    explanation:
-      "Aquaplaning terjadi saat ban tidak mampu membuang air cukup cepat, sehingga kendaraan 'mengapung' di atas air dan kehilangan kendali.",
-  },
-  {
-    q: "Nomor darurat Polisi di Indonesia adalah?",
-    options: ["112", "118", "110", "113"],
-    answer: 2,
-    explanation:
-      "110 adalah nomor darurat Polisi. 118 untuk Ambulans, 113 untuk Pemadam Kebakaran, dan 112 adalah nomor darurat umum.",
-  },
-  {
-    q: "Kapan helm harus diganti meskipun tidak ada kerusakan terlihat?",
-    options: ["Setiap 1 tahun", "Setiap 3–5 tahun", "Setiap 10 tahun", "Tidak perlu diganti"],
-    answer: 1,
-    explanation:
-      "Material helm mengalami degradasi seiring waktu akibat panas, keringat, dan UV. Produsen merekomendasikan penggantian setiap 3–5 tahun.",
-  },
 ];
 
 // ── Emergency Steps ───────────────────────────────────────────────
@@ -178,27 +120,49 @@ const fadeUp = {
   show: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.45 } }),
 };
 
+// ── Dynamic types ─────────────────────────────────────────────────
+interface Poster { id: string; title: string; tag: string; color: string; icon: string; imageUrl?: string | null; }
+interface QuizItem { id: string; q: string; options: string[]; answer: number; explanation: string; }
+
 // ── Component ─────────────────────────────────────────────────────
 export default function EducationPage() {
   const [openCat, setOpenCat] = useState<number | null>(0);
   const [tipIndex, setTipIndex] = useState(0);
+  const [posters, setPosters] = useState<Poster[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState<QuizItem[]>([]);
+  const [selectedPoster, setSelectedPoster] = useState<Poster | null>(null);
+
   useEffect(() => { setTipIndex(Math.floor(Math.random() * TIPS.length)); }, []);
+
+  const loadContent = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/education");
+      const data = await res.json();
+      setPosters(data.posters ?? []);
+      setQuizQuestions(data.quizzes ?? []);
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => { loadContent(); }, [loadContent]);
+
+
+
   const [quizIndex, setQuizIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [quizDone, setQuizDone] = useState(false);
   const [score, setScore] = useState(0);
 
-  const currentQ = QUIZ_QUESTIONS[quizIndex];
-  const isCorrect = selected === currentQ.answer;
+  const currentQ = quizQuestions[quizIndex];
+  const isCorrect = selected !== null && currentQ ? selected === currentQ.answer : false;
 
   function handleAnswer(i: number) {
-    if (selected !== null) return;
+    if (selected !== null || !currentQ) return;
     setSelected(i);
     if (i === currentQ.answer) setScore((s) => s + 1);
   }
 
   function nextQuestion() {
-    if (quizIndex + 1 >= QUIZ_QUESTIONS.length) {
+    if (quizIndex + 1 >= quizQuestions.length) {
       setQuizDone(true);
     } else {
       setQuizIndex((q) => q + 1);
@@ -326,27 +290,70 @@ export default function EducationPage() {
         <div className="max-w-7xl mx-auto px-4">
           <SectionLabel icon={Image} color="text-purple-400" label="Poster Digital" />
           <h2 className="text-2xl font-bold mb-6">Galeri Poster</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {POSTERS.map((poster, i) => (
-              <motion.div
-                key={poster.id}
-                custom={i}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className={`relative rounded-2xl bg-gradient-to-br ${poster.color} p-4 aspect-[3/4] flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform shadow-lg`}
-              >
-                <span className="text-xs font-medium bg-black/30 rounded-full px-2 py-0.5 w-fit">{poster.tag}</span>
-                <div>
-                  <div className="text-3xl mb-2">{poster.icon}</div>
-                  <p className="text-xs font-semibold leading-snug">{poster.title}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {posters.length === 0 ? (
+            <p className="text-gray-500 text-sm">Belum ada poster. Tambahkan melalui dashboard admin.</p>
+          ) : (
+            <div className="overflow-hidden">
+              <div className="flex gap-3 w-max poster-track">
+                {[...posters, ...posters].map((poster, i) => (
+                  <div
+                    key={`${poster.id}-${i}`}
+                    onClick={() => setSelectedPoster(poster)}
+                    className="relative flex-shrink-0 w-36 aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border border-white/10 bg-gray-800 hover:scale-105 transition-transform shadow-lg"
+                  >
+                    {poster.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={poster.imageUrl} alt={poster.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-4xl">{poster.icon}</div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-2">
+                      <span className="text-[10px] font-medium bg-black/40 rounded-full px-2 py-0.5">{poster.tag}</span>
+                      <p className="text-xs font-semibold mt-1 leading-snug">{poster.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
+
+      {/* ── Poster Lightbox ── */}
+      <AnimatePresence>
+        {selectedPoster && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            onClick={() => setSelectedPoster(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-sm w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {selectedPoster.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={selectedPoster.imageUrl} alt={selectedPoster.title} className="w-full object-cover max-h-[70vh]" />
+              ) : (
+                <div className="flex items-center justify-center h-64 text-7xl bg-gray-800">{selectedPoster.icon}</div>
+              )}
+              <div className="p-4">
+                <span className="text-xs font-semibold text-purple-400">{selectedPoster.tag}</span>
+                <p className="font-bold text-white mt-1">{selectedPoster.title}</p>
+              </div>
+              <button
+                onClick={() => setSelectedPoster(null)}
+                className="absolute top-3 right-3 p-1.5 bg-black/60 hover:bg-black/80 rounded-full transition-colors"
+              >
+                <X size={16} className="text-white" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Daily Tips ── */}
       <section className="max-w-7xl mx-auto px-4 py-12">
@@ -382,20 +389,24 @@ export default function EducationPage() {
           <h2 className="text-2xl font-bold mb-6">Uji Pengetahuan Anda</h2>
 
           <div className="max-w-2xl">
-            {quizDone ? (
+            {quizQuestions.length === 0 ? (
+              <p className="text-gray-500 text-sm">Belum ada pertanyaan kuis.</p>
+            ) : quizDone ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center"
               >
-                <div className="text-5xl mb-4">{score >= 4 ? "🏆" : score >= 2 ? "👍" : "📚"}</div>
+                <div className="text-5xl mb-4">
+                  {score >= Math.ceil(quizQuestions.length * 0.8) ? "🏆" : score >= Math.ceil(quizQuestions.length * 0.4) ? "👍" : "📚"}
+                </div>
                 <h3 className="text-2xl font-bold mb-2">
-                  Skor: {score}/{QUIZ_QUESTIONS.length}
+                  Skor: {score}/{quizQuestions.length}
                 </h3>
                 <p className="text-gray-400 mb-6">
-                  {score >= 4
+                  {score >= Math.ceil(quizQuestions.length * 0.8)
                     ? "Luar biasa! Pengetahuan keselamatan Anda sangat baik."
-                    : score >= 2
+                    : score >= Math.ceil(quizQuestions.length * 0.4)
                     ? "Cukup baik! Terus pelajari materi keselamatan."
                     : "Yuk pelajari lagi materi keselamatan di atas!"}
                 </p>
@@ -406,7 +417,7 @@ export default function EducationPage() {
                   <RefreshCw size={16} /> Ulangi Kuis
                 </button>
               </motion.div>
-            ) : (
+            ) : currentQ ? (
               <motion.div
                 key={quizIndex}
                 initial={{ opacity: 0, x: 20 }}
@@ -415,7 +426,7 @@ export default function EducationPage() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs text-gray-400">
-                    Pertanyaan {quizIndex + 1} / {QUIZ_QUESTIONS.length}
+                    Pertanyaan {quizIndex + 1} / {quizQuestions.length}
                   </span>
                   <span className="text-xs text-blue-400 font-medium">Skor: {score}</span>
                 </div>
@@ -423,7 +434,7 @@ export default function EducationPage() {
                 <div className="w-full h-1.5 bg-white/10 rounded-full mb-5">
                   <div
                     className="h-1.5 bg-blue-500 rounded-full transition-all"
-                    style={{ width: `${((quizIndex) / QUIZ_QUESTIONS.length) * 100}%` }}
+                    style={{ width: `${(quizIndex / quizQuestions.length) * 100}%` }}
                   />
                 </div>
 
@@ -472,11 +483,11 @@ export default function EducationPage() {
                     onClick={nextQuestion}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition-colors text-sm"
                   >
-                    {quizIndex + 1 >= QUIZ_QUESTIONS.length ? "Lihat Hasil" : "Pertanyaan Berikutnya →"}
+                    {quizIndex + 1 >= quizQuestions.length ? "Lihat Hasil" : "Pertanyaan Berikutnya →"}
                   </button>
                 )}
               </motion.div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
@@ -560,4 +571,25 @@ function SectionLabel({
       {label}
     </div>
   );
+}
+
+// CSS injected once for poster scroll animation
+const POSTER_SCROLL_CSS = `
+  @keyframes poster-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .poster-track {
+    animation: poster-scroll 20s linear infinite;
+  }
+  .poster-track:hover {
+    animation-play-state: paused;
+  }
+`;
+
+if (typeof document !== "undefined" && !document.getElementById("poster-scroll-css")) {
+  const s = document.createElement("style");
+  s.id = "poster-scroll-css";
+  s.textContent = POSTER_SCROLL_CSS;
+  document.head.appendChild(s);
 }

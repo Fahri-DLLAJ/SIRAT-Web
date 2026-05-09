@@ -2,22 +2,15 @@
 import { useEffect } from "react";
 import { useAppStore, Device } from "@/store/appStore";
 
-const MOCK_DEVICES: Device[] = [
-  { id: "d1", name: "Kamera Simpang Pedan",        type: "camera",        lat: -7.7059, lng: 110.6010, status: "active",  ip: "192.168.1.101", lastSeen: new Date().toISOString() },
-  { id: "d2", name: "Lampu Jalan Jl. Pemuda",      type: "lamp",          lat: -7.7080, lng: 110.5980, status: "active",  ip: "192.168.1.102", lastSeen: new Date().toISOString() },
-  { id: "d3", name: "ZoSS SDN Klaten Tengah",      type: "sensor",        lat: -7.7120, lng: 110.6050, status: "offline", lastSeen: new Date(Date.now() - 86400000).toISOString() },
-  { id: "d4", name: "Traffic Light Alun-Alun",     type: "traffic-light", lat: -7.7065, lng: 110.6025, status: "active",  ip: "192.168.1.104", lastSeen: new Date().toISOString() },
-  { id: "d5", name: "Kamera Simpang Prambanan",    type: "camera",        lat: -7.7520, lng: 110.4910, status: "active",  ip: "192.168.1.105", lastSeen: new Date().toISOString() },
-  { id: "d6", name: "Traffic Light Jl. Solo",      type: "traffic-light", lat: -7.7200, lng: 110.5900, status: "active",  ip: "192.168.1.106", lastSeen: new Date().toISOString() },
-  { id: "d7", name: "ZoSS SDN Ceper",              type: "sensor",        lat: -7.6850, lng: 110.6200, status: "active",  ip: "192.168.1.107", lastSeen: new Date().toISOString() },
-  { id: "d8", name: "Lampu Jalan Jl. Merbabu",     type: "lamp",          lat: -7.7010, lng: 110.6080, status: "offline", lastSeen: new Date(Date.now() - 3600000).toISOString() },
-];
-
 export function useDevices() {
   const { devices, setDevices } = useAppStore();
 
   useEffect(() => {
-    if (devices.length === 0) setDevices(MOCK_DEVICES);
+    fetch("/api/admin/devices")
+      .then((r) => r.json())
+      .then((d) => { if (d.ok) setDevices(d.devices); })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activeCount = devices.filter((d) => d.status === "active").length;
@@ -27,9 +20,9 @@ export function useDevices() {
   const systemStatus = (
     ["camera", "lamp", "traffic-light", "sensor"] as Device["type"][]
   ).map((type) => {
-    const group = byType(type);
+    const group  = byType(type);
     const online = group.filter((d) => d.status === "active").length;
-    const total = group.length;
+    const total  = group.length;
     const status: "online" | "warning" | "offline" =
       total === 0 ? "offline" : online === total ? "online" : online > 0 ? "warning" : "offline";
     const labelMap: Record<Device["type"], string> = {
