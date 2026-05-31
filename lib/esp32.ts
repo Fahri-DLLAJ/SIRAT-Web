@@ -5,7 +5,7 @@ import axios from "axios";
  * Use this as the `src` of an <img> tag — browsers handle MJPEG natively.
  */
 export function getMjpegStreamUrl(ip: string): string {
-  return `http://${ip}/stream`;
+  return `http://${ip}:81/stream`;
 }
 
 /**
@@ -45,4 +45,9 @@ export async function toggleDevicePin(ip: string, pin: number, state: boolean) {
   } catch {
     return false;
   }
+}
+
+/** Returns the URL of the ESP32-CAM config portal page. */
+export function getConfigPortalUrl(ip: string): string {
+  return `http://${ip}/`;
 }

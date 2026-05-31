@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { getMjpegStreamUrl, getProcessedStreamUrl, getSnapshotUrl } from "@/lib/esp32";
-import { X, Video, Cpu, Camera, AlertCircle, Loader2, Maximize2 } from "lucide-react";
+import { getMjpegStreamUrl, getProcessedStreamUrl, getSnapshotUrl, getConfigPortalUrl } from "@/lib/esp32";
+import { X, Video, Cpu, Camera, AlertCircle, Loader2, Maximize2, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
@@ -90,6 +90,15 @@ export default function CameraWindow({ ip, deviceName, aiPort = 5000, onClose }:
               />
               <ModeBtn active={mode === "snapshot"} onClick={() => { setMode("snapshot"); setError(false); }} icon={<Camera size={12} />} label="Foto" />
             </div>
+            <a
+              href={getConfigPortalUrl(ip)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open device config portal"
+              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <Settings size={14} className="text-gray-400" />
+            </a>
             <button onClick={() => setFullscreen((f) => !f)} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
               <Maximize2 size={14} className="text-gray-400" />
             </button>
