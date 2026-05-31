@@ -11,33 +11,57 @@ export default function NotificationBell() {
 
   return (
     <div className="relative">
+      {/* Minimalist Bell Button */}
       <button
         onClick={() => { setOpen(!open); if (!open) markAllRead(); }}
-        className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
+        className="relative p-2 rounded-lg hover:bg-white/5 text-slate-300 hover:text-white transition-all duration-200 group"
+        aria-label="Notifications"
       >
-        <Bell size={20} />
+        <Bell size={20} strokeWidth={2} className="group-hover:scale-110 transition-transform" />
         {unread > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] flex items-center justify-center font-bold">
-            {unread}
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-gradient-to-br from-rose-500 to-rose-600 rounded-full text-[10px] flex items-center justify-center font-bold text-white shadow-lg shadow-rose-500/30 animate-pulse">
+            {unread > 9 ? '9+' : unread}
           </span>
         )}
       </button>
+
+      {/* Glassmorphic Dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="absolute right-0 mt-2 w-72 bg-gray-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute right-0 mt-3 w-80 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 z-50 overflow-hidden"
           >
-            <div className="p-3 border-b border-white/10 text-sm font-semibold">Notifikasi</div>
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+              <span className="text-sm font-semibold text-white tracking-tight">Notifikasi</span>
+              {unread > 0 && (
+                <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  {unread} baru
+                </span>
+              )}
+            </div>
+
+            {/* Notification List */}
             {notifications.length === 0 ? (
-              <p className="p-4 text-sm text-gray-400 text-center">Tidak ada notifikasi</p>
+              <div className="p-8 text-center">
+                <Bell size={32} className="mx-auto text-slate-600 mb-3" strokeWidth={1.5} />
+                <p className="text-sm text-slate-400">Tidak ada notifikasi</p>
+              </div>
             ) : (
-              <ul className="max-h-64 overflow-y-auto divide-y divide-white/5">
+              <ul className="max-h-80 overflow-y-auto">
                 {notifications.map((n) => (
-                  <li key={n.id} className="px-4 py-3 text-sm text-gray-300 hover:bg-white/5">
-                    {n.message}
+                  <li 
+                    key={n.id} 
+                    className="px-4 py-3.5 text-[13px] text-slate-300 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                  >
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0"></div>
+                      <p className="leading-relaxed">{n.message}</p>
+                    </div>
                   </li>
                 ))}
               </ul>

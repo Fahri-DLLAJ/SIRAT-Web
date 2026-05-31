@@ -36,38 +36,38 @@ interface HistoryEntry {
 
 // ── Badge helpers ──────────────────────────────────────────────────
 const SEV_CLS: Record<string, string> = {
-  critical: "bg-red-500/15 text-red-400 border-red-500/30",
+  critical: "bg-rose-500/15 text-rose-400 border-rose-500/30",
   high:     "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  medium:   "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  low:      "bg-green-500/15 text-green-400 border-green-500/30",
+  medium:   "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  low:      "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
 };
 const SEV_LABEL: Record<string, string> = { critical: "Kritis", high: "Tinggi", medium: "Sedang", low: "Rendah" };
 
 const STA_CLS: Record<string, string> = {
-  active:   "bg-green-500/15 text-green-400 border-green-500/30",
-  pending:  "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  resolved: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  active:   "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  pending:  "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  resolved: "bg-sky-500/15 text-sky-400 border-sky-500/30",
 };
 const STA_LABEL: Record<string, string> = { active: "Aktif", pending: "Menunggu", resolved: "Selesai" };
 
 const SRC_CFG: Record<Source, { label: string; icon: React.ElementType; cls: string }> = {
-  local:    { label: "Lokal",    icon: HardDrive, cls: "bg-gray-500/15 text-gray-400 border-gray-500/30"   },
-  firebase: { label: "Firebase", icon: Database,  cls: "bg-orange-500/15 text-orange-400 border-orange-500/30" },
-  sheets:   { label: "Sheets",   icon: Sheet,     cls: "bg-green-500/15 text-green-400 border-green-500/30"    },
+  local:    { label: "Lokal",    icon: HardDrive, cls: "bg-slate-500/15 text-slate-400 border-slate-500/30"      },
+  firebase: { label: "Firebase", icon: Database,  cls: "bg-orange-500/15 text-orange-400 border-orange-500/30"   },
+  sheets:   { label: "Sheets",   icon: Sheet,     cls: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
 };
 
 function SevBadge({ s }: { s: string }) {
-  return <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${SEV_CLS[s] ?? SEV_CLS.low}`}>{SEV_LABEL[s] ?? s}</span>;
+  return <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border ${SEV_CLS[s] ?? SEV_CLS.low}`}>{SEV_LABEL[s] ?? s}</span>;
 }
 function StaBadge({ s }: { s: string }) {
-  return <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${STA_CLS[s] ?? STA_CLS.pending}`}>{STA_LABEL[s] ?? s}</span>;
+  return <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border ${STA_CLS[s] ?? STA_CLS.pending}`}>{STA_LABEL[s] ?? s}</span>;
 }
 function SrcBadge({ s }: { s: Source }) {
   const cfg = SRC_CFG[s];
   const Icon = cfg.icon;
   return (
-    <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${cfg.cls}`}>
-      <Icon size={9} />{cfg.label}
+    <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border ${cfg.cls}`}>
+      <Icon size={10} strokeWidth={2} />{cfg.label}
     </span>
   );
 }
@@ -544,22 +544,22 @@ export default function DashboardHistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-white">
 
       {/* ── Sticky header ── */}
-      <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-20">
+      <div className="border-b border-white/5 bg-slate-950/90 backdrop-blur-xl sticky top-14 z-20 shadow-sm shadow-black/5">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-blue-400 text-xs font-medium mb-0.5">
-              <Clock size={13} /> Riwayat Data
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
+              <Clock size={14} strokeWidth={2} /> Riwayat Data
             </div>
-            <h1 className="text-lg sm:text-xl font-extrabold">Log Aktivitas Sistem</h1>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">Log Aktivitas Sistem</h1>
           </div>
           <button
             onClick={load}
             className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-lg transition-colors"
           >
-            <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Refresh
+            <RefreshCw size={13} strokeWidth={2} className={loading ? "animate-spin" : ""} /> Refresh
           </button>
         </div>
       </div>

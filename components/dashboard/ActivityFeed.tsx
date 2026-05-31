@@ -12,11 +12,11 @@ interface FeedItem {
 }
 
 const ICON_MAP = {
-  report:   { icon: AlertTriangle, color: "text-orange-400", bg: "bg-orange-400/10" },
-  offline:  { icon: WifiOff,       color: "text-red-400",    bg: "bg-red-400/10"    },
-  outage:   { icon: Zap,           color: "text-yellow-400", bg: "bg-yellow-400/10" },
-  resolved: { icon: CheckCircle2,  color: "text-green-400",  bg: "bg-green-400/10"  },
-  camera:   { icon: Camera,        color: "text-blue-400",   bg: "bg-blue-400/10"   },
+  report:   { icon: AlertTriangle, color: "text-orange-400", bg: "bg-orange-500/10", dot: "bg-orange-400" },
+  offline:  { icon: WifiOff,       color: "text-rose-400",    bg: "bg-rose-500/10",    dot: "bg-rose-400"   },
+  outage:   { icon: Zap,           color: "text-amber-400",   bg: "bg-amber-500/10",   dot: "bg-amber-400"  },
+  resolved: { icon: CheckCircle2,  color: "text-emerald-400", bg: "bg-emerald-500/10", dot: "bg-emerald-400"},
+  camera:   { icon: Camera,        color: "text-sky-400",     bg: "bg-sky-500/10",     dot: "bg-sky-400"    },
 };
 
 function timeAgo(iso: string): string {
@@ -102,14 +102,17 @@ export default function ActivityFeed() {
 
   if (items.length === 0) {
     return (
-      <div className="flex items-center justify-center flex-1 text-gray-600 text-xs py-6">
-        Belum ada aktivitas
+      <div className="flex flex-col items-center justify-center flex-1 text-slate-500 text-xs py-8">
+        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
+          <AlertTriangle size={20} strokeWidth={1.5} className="text-slate-600" />
+        </div>
+        <p>Belum ada aktivitas</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2 overflow-y-auto flex-1 min-h-0">
+    <div className="space-y-2 overflow-y-auto flex-1 min-h-0 pr-1">
       <AnimatePresence initial={false}>
         {items.map((item) => {
           const cfg = ICON_MAP[item.type];
@@ -117,17 +120,25 @@ export default function ActivityFeed() {
           return (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.22 }}
-              className="flex items-center gap-3 bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl px-3 py-2.5 transition-colors"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="group flex items-start gap-3 bg-gradient-to-br from-white/[0.06] to-white/[0.02] hover:from-white/[0.09] hover:to-white/[0.04] border border-white/5 hover:border-white/10 rounded-xl px-3 py-3 transition-all duration-200"
             >
-              <div className={`p-2 rounded-xl flex-shrink-0 ${cfg.bg}`}>
-                <Icon size={13} className={cfg.color} />
+              {/* Status dot + Icon */}
+              <div className="relative flex-shrink-0">
+                <div className={`p-2 rounded-lg ${cfg.bg}`}>
+                  <Icon size={14} className={cfg.color} strokeWidth={2} />
+                </div>
+                <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${cfg.dot} shadow-sm`} />
               </div>
-              <p className="flex-1 text-xs text-gray-200 leading-snug">{item.message}</p>
-              <span className="text-[10px] text-gray-500 flex-shrink-0 whitespace-nowrap">{item.time}</span>
+              
+              {/* Message */}
+              <div className="flex-1 min-w-0 pt-0.5">
+                <p className="text-[13px] text-slate-200 leading-relaxed">{item.message}</p>
+                <span className="text-[11px] text-slate-500 mt-1 inline-block">{item.time}</span>
+              </div>
             </motion.div>
           );
         })}

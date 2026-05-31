@@ -18,25 +18,26 @@ const KLATEN_CENTER: [number, number] = [-7.7059, 110.6010];
 const KLATEN_ZOOM = 13;
 
 // ── Styled pin icon: colored circle + emoji ────────────────────────────────
-function pinIcon(L: typeof import("leaflet"), emoji: string, bg: string, size = 36) {
+function pinIcon(L: typeof import("leaflet"), emoji: string, bg: string, size = 38) {
   const half = size / 2;
   return L.divIcon({
     html: `
       <div style="
         width:${size}px;height:${size}px;
         background:${bg};
-        border:2.5px solid rgba(255,255,255,0.85);
+        border:3px solid rgba(255,255,255,0.9);
         border-radius:50% 50% 50% 0;
         transform:rotate(-45deg);
-        box-shadow:0 2px 8px rgba(0,0,0,0.45);
+        box-shadow:0 4px 12px rgba(0,0,0,0.5), 0 0 0 2px rgba(0,0,0,0.1);
         display:flex;align-items:center;justify-content:center;
+        transition: all 0.2s ease;
       ">
-        <span style="transform:rotate(45deg);font-size:${size * 0.44}px;line-height:1">${emoji}</span>
+        <span style="transform:rotate(45deg);font-size:${size * 0.45}px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))">${emoji}</span>
       </div>`,
-    className: "",
+    className: "map-pin-icon",
     iconSize:   [size, size],
     iconAnchor: [half, size],
-    popupAnchor:[0, -(size + 4)],
+    popupAnchor:[0, -(size + 6)],
   });
 }
 
@@ -70,16 +71,40 @@ function timeAgo(iso: string) {
 
 // ── Popup styles (injected once) ───────────────────────────────────────────
 const POPUP_CSS = `
-  .s-popup { font-family: system-ui, sans-serif; min-width: 210px; color: #f1f5f9; }
-  .s-popup-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
-  .s-popup-sub   { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
-  .s-popup-row   { display:flex; align-items:center; gap:6px; font-size:11px; margin-bottom:5px; }
-  .s-popup-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px;
-                   border-radius:999px; font-size:10px; font-weight:600; }
-  .leaflet-popup-content-wrapper { background:#1e293b !important; border:1px solid rgba(255,255,255,0.1) !important;
-                                    border-radius:12px !important; box-shadow:0 8px 32px rgba(0,0,0,0.5) !important; }
-  .leaflet-popup-tip             { background:#1e293b !important; }
-  .leaflet-popup-close-button    { color:#94a3b8 !important; font-size:16px !important; top:8px !important; right:8px !important; }
+  .s-popup { font-family: system-ui, sans-serif; min-width: 220px; color: #f1f5f9; }
+  .s-popup-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .s-popup-sub   { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
+  .s-popup-row   { display:flex; align-items:center; gap:7px; font-size:11px; margin-bottom:6px; color:#cbd5e1; }
+  .s-popup-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px;
+                   border-radius:999px; font-size:10px; font-weight:600; border:1px solid; }
+  .leaflet-popup-content-wrapper { 
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.1) inset !important;
+    padding: 4px !important;
+  }
+  .leaflet-popup-content { margin: 12px 14px !important; }
+  .leaflet-popup-tip { 
+    background: rgba(15, 23, 42, 0.98) !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
+  }
+  .leaflet-popup-close-button { 
+    color: #94a3b8 !important;
+    font-size: 18px !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s !important;
+  }
+  .leaflet-popup-close-button:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+  }
 `;
 
 export default function MainMap({ devices, reports, filters, onSelectDevice, onSelectReport }: Props) {
@@ -209,23 +234,23 @@ function renderMarkers(
 // ── Popup builders ─────────────────────────────────────────────────────────
 function statusBadge(status: Device["status"]) {
   const map = {
-    active:  { color: "#22c55e", bg: "rgba(34,197,94,0.15)",  label: "● Online"   },
-    offline: { color: "#6b7280", bg: "rgba(107,114,128,0.15)", label: "● Offline"  },
-    pending: { color: "#eab308", bg: "rgba(234,179,8,0.15)",  label: "● Menunggu" },
+    active:  { color: "#10b981", bg: "rgba(16,185,129,0.15)", border: "rgba(16,185,129,0.3)", label: "● Online"   },
+    offline: { color: "#64748b", bg: "rgba(100,116,139,0.15)", border: "rgba(100,116,139,0.3)", label: "● Offline"  },
+    pending: { color: "#f59e0b", bg: "rgba(245,158,11,0.15)", border: "rgba(245,158,11,0.3)", label: "● Menunggu" },
   };
   const s = map[status] ?? map.offline;
-  return `<span class="s-popup-badge" style="color:${s.color};background:${s.bg}">${s.label}</span>`;
+  return `<span class="s-popup-badge" style="color:${s.color};background:${s.bg};border-color:${s.border}">${s.label}</span>`;
 }
 
 function sevBadge(sev: Report["severity"]) {
   const map = {
-    critical: { color: "#ef4444", bg: "rgba(239,68,68,0.15)",   label: "Kritis"  },
-    high:     { color: "#f97316", bg: "rgba(249,115,22,0.15)",  label: "Tinggi"  },
-    medium:   { color: "#eab308", bg: "rgba(234,179,8,0.15)",   label: "Sedang"  },
-    low:      { color: "#22c55e", bg: "rgba(34,197,94,0.15)",   label: "Rendah"  },
+    critical: { color: "#f43f5e", bg: "rgba(244,63,94,0.15)", border: "rgba(244,63,94,0.3)", label: "Kritis"  },
+    high:     { color: "#f97316", bg: "rgba(249,115,22,0.15)", border: "rgba(249,115,22,0.3)", label: "Tinggi"  },
+    medium:   { color: "#f59e0b", bg: "rgba(245,158,11,0.15)", border: "rgba(245,158,11,0.3)", label: "Sedang"  },
+    low:      { color: "#10b981", bg: "rgba(16,185,129,0.15)", border: "rgba(16,185,129,0.3)", label: "Rendah"  },
   };
   const s = map[sev];
-  return `<span class="s-popup-badge" style="color:${s.color};background:${s.bg}">${s.label}</span>`;
+  return `<span class="s-popup-badge" style="color:${s.color};background:${s.bg};border-color:${s.border}">${s.label}</span>`;
 }
 
 function devicePopup(d: Device): string {

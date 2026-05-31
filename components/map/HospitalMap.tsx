@@ -13,14 +13,38 @@ interface Props {
 const KLATEN: [number, number] = [-7.7059, 110.6010];
 
 const POPUP_CSS = `
-  .h-popup { font-family: system-ui, sans-serif; min-width: 180px; color: #f1f5f9; }
-  .h-popup-title { font-weight: 700; font-size: 12px; margin-bottom: 3px; }
-  .h-popup-sub   { font-size: 10px; color: #94a3b8; margin-bottom: 6px; }
-  .h-popup-row   { font-size: 10px; color: #cbd5e1; margin-bottom: 3px; display:flex; align-items:center; gap:4px; }
-  .leaflet-popup-content-wrapper { background:#1e293b !important; border:1px solid rgba(255,255,255,0.1) !important;
-                                    border-radius:12px !important; box-shadow:0 8px 32px rgba(0,0,0,0.5) !important; }
-  .leaflet-popup-tip             { background:#1e293b !important; }
-  .leaflet-popup-close-button    { color:#94a3b8 !important; }
+  .h-popup { font-family: system-ui, sans-serif; min-width: 200px; color: #f1f5f9; }
+  .h-popup-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .h-popup-sub   { font-size: 11px; color: #94a3b8; margin-bottom: 8px; }
+  .h-popup-row   { font-size: 11px; color: #cbd5e1; margin-bottom: 4px; display:flex; align-items:center; gap:5px; }
+  .leaflet-popup-content-wrapper { 
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.1) inset !important;
+    padding: 4px !important;
+  }
+  .leaflet-popup-content { margin: 12px 14px !important; }
+  .leaflet-popup-tip { 
+    background: rgba(15, 23, 42, 0.98) !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
+  }
+  .leaflet-popup-close-button { 
+    color: #94a3b8 !important;
+    font-size: 18px !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s !important;
+  }
+  .leaflet-popup-close-button:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+  }
 `;
 
 export default function HospitalMap({ hospitals, userCoords, selected, onSelect }: Props) {
@@ -74,19 +98,19 @@ export default function HospitalMap({ hospitals, userCoords, selected, onSelect 
 
       hospitals.forEach((h, idx) => {
         const isFirst = idx === 0 && !!userCoords;
-        const color = isFirst ? "#22c55e" : "#3b82f6";
+        const color = isFirst ? "#10b981" : "#0ea5e9";
         const icon = L.divIcon({
           html: `<div style="
-            width:32px;height:32px;background:${color};
-            border:2.5px solid rgba(255,255,255,0.85);border-radius:50% 50% 50% 0;
-            transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,0.45);
+            width:36px;height:36px;background:${color};
+            border:3px solid rgba(255,255,255,0.9);border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);box-shadow:0 4px 12px rgba(0,0,0,0.5), 0 0 0 2px rgba(0,0,0,0.1);
             display:flex;align-items:center;justify-content:center;">
-            <span style="transform:rotate(45deg);font-size:13px;line-height:1">🏥</span>
+            <span style="transform:rotate(45deg);font-size:15px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))">🏥</span>
           </div>`,
-          className: "",
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-          popupAnchor: [0, -36],
+          className: "map-pin-icon",
+          iconSize: [36, 36],
+          iconAnchor: [18, 36],
+          popupAnchor: [0, -40],
         });
 
         const popup = `<div class="h-popup">
@@ -99,7 +123,7 @@ export default function HospitalMap({ hospitals, userCoords, selected, onSelect 
 
         const marker = L.marker([h.lat, h.lng], { icon })
           .addTo(map)
-          .bindPopup(popup, { maxWidth: 240 });
+          .bindPopup(popup, { maxWidth: 260 });
         marker.on("click", () => onSelect(h));
         markersRef.current.set(h.id, marker);
       });
@@ -115,17 +139,17 @@ export default function HospitalMap({ hospitals, userCoords, selected, onSelect 
       if (userMarkerRef.current) map.removeLayer(userMarkerRef.current);
       const icon = L.divIcon({
         html: `<div style="
-          width:16px;height:16px;background:#3b82f6;
+          width:18px;height:18px;background:#0ea5e9;
           border:3px solid white;border-radius:50%;
-          box-shadow:0 0 0 4px rgba(59,130,246,0.3);">
+          box-shadow:0 0 0 4px rgba(14,165,233,0.3), 0 2px 8px rgba(0,0,0,0.3);">
         </div>`,
-        className: "",
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
+        className: "user-location-icon",
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
       });
       userMarkerRef.current = L.marker([userCoords.lat, userCoords.lng], { icon })
         .addTo(map)
-        .bindPopup("<div style='color:#f1f5f9;font-size:11px;font-weight:600'>📍 Lokasi Anda</div>");
+        .bindPopup("<div style='color:#f1f5f9;font-size:12px;font-weight:600;padding:2px'>📍 Lokasi Anda</div>");
       map.flyTo([userCoords.lat, userCoords.lng], 14, { duration: 1 });
     });
   }, [userCoords]);

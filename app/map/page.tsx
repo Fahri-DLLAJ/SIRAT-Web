@@ -85,20 +85,20 @@ export default function MapPage() {
   const activeFilterCount = filters.includes("all") ? 0 : filters.length;
 
   return (
-    <div className="bg-gray-950 text-white">
+    <div className="bg-slate-950 text-white">
 
       {/* ══════════════════════════════════════════════════════════════════
           TOP BAR — fixed below the navbar
           Mobile : [icon + title]  ···  [filter btn]  [panel btn]
           Desktop: [icon + title + subtitle]  [pills…]  [panel btn]
       ══════════════════════════════════════════════════════════════════ */}
-      <div className="fixed top-16 left-0 right-0 z-20 flex items-center gap-2 px-3 sm:px-4 h-12 border-b border-white/10 bg-gray-950">
+      <div className="fixed top-14 left-0 right-0 z-20 flex items-center gap-2 px-3 sm:px-4 h-12 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
 
         {/* Title */}
         <div className="flex items-center gap-1.5 font-bold text-white flex-shrink-0">
-          <MapPin size={14} className="text-blue-400" />
+          <MapPin size={14} className="text-emerald-400" />
           <span className="text-sm">Peta Monitoring</span>
-          <span className="hidden sm:inline text-[10px] font-normal text-gray-500 ml-0.5">
+          <span className="hidden sm:inline text-[10px] font-normal text-slate-500 ml-0.5">
             Kabupaten Klaten
           </span>
         </div>
@@ -112,7 +112,7 @@ export default function MapPage() {
                 key={f.id}
                 onClick={() => toggleFilter(f.id)}
                 className={`flex-shrink-0 flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg border transition-all ${
-                  active ? f.activeColor : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white"
+                  active ? f.activeColor : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <span>{f.emoji}</span>
@@ -128,12 +128,12 @@ export default function MapPage() {
         {/* Mobile: filter button with badge */}
         <button
           onClick={() => setFilterSheetOpen(true)}
-          className="sm:hidden relative flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-colors"
+          className="sm:hidden relative flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-colors"
         >
           <SlidersHorizontal size={13} />
           <span>Filter</span>
           {activeFilterCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full text-[9px] font-bold flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full text-[9px] font-bold flex items-center justify-center">
               {activeFilterCount}
             </span>
           )}
@@ -142,7 +142,7 @@ export default function MapPage() {
         {/* Legend button — mobile only */}
         <button
           onClick={() => setLegendOpen((o) => !o)}
-          className="sm:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors"
+          className="sm:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-colors"
           title="Legenda"
         >
           <Info size={14} />
@@ -152,7 +152,7 @@ export default function MapPage() {
         <button
           onClick={() => setSideOpen((o) => !o)}
           title={sideOpen ? "Tutup panel" : "Buka panel"}
-          className="flex-shrink-0 p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+          className="flex-shrink-0 p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
         >
           {sideOpen ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
         </button>
@@ -161,7 +161,7 @@ export default function MapPage() {
       {/* ══════════════════════════════════════════════════════════════════
           BODY
       ══════════════════════════════════════════════════════════════════ */}
-      <div className="fixed top-28 left-0 right-0 bottom-0 flex overflow-hidden">
+      <div className="fixed top-26 left-0 right-0 bottom-0 flex overflow-hidden">
 
         {/* ── Map ── */}
         <div className="relative flex-1 overflow-hidden" style={{ isolation: "isolate", minHeight: 0 }}>

@@ -72,8 +72,8 @@ export default function LocationPicker({ lat, lng, onChange }: Props) {
   return (
     <div
       ref={containerRef}
-      className="w-full rounded-2xl overflow-hidden border border-white/10"
-      style={{ isolation: "isolate", height: "208px" }}
+      className="w-full rounded-2xl overflow-hidden border border-white/10 shadow-lg shadow-black/10"
+      style={{ isolation: "isolate", height: "220px" }}
     />
   );
 }

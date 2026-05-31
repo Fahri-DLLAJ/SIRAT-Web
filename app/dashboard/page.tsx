@@ -58,40 +58,40 @@ export default function DashboardPage() {
   const offlineCount = devices.filter((d) => d.status === "offline").length;
 
   const WIDGETS = [
-    { icon: AlertTriangle, label: "Laporan Hari Ini",    value: todayCount,    sub: "insiden tercatat",    color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20" },
-    { icon: FileText,      label: "Belum Diverifikasi",  value: unverified,    sub: "menunggu tindakan",   color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
-    { icon: Cpu,           label: "Perangkat Online",    value: activeCount,   sub: "kamera & sensor aktif",color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20"  },
-    { icon: WifiOff,       label: "Perangkat Offline",   value: offlineCount,  sub: "perlu perhatian",     color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20"    },
-    { icon: CheckCircle2,  label: "Diselesaikan",        value: resolvedCount, sub: "total tertangani",    color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20"   },
+    { icon: AlertTriangle, label: "Laporan Hari Ini",    value: todayCount,    sub: "insiden tercatat",    color: "text-orange-400", bg: "bg-gradient-to-br from-orange-500/10 to-orange-500/5", border: "border-orange-500/20" },
+    { icon: FileText,      label: "Belum Diverifikasi",  value: unverified,    sub: "menunggu tindakan",   color: "text-amber-400", bg: "bg-gradient-to-br from-amber-500/10 to-amber-500/5", border: "border-amber-500/20" },
+    { icon: Cpu,           label: "Perangkat Online",    value: activeCount,   sub: "kamera & sensor aktif",color: "text-emerald-400",  bg: "bg-gradient-to-br from-emerald-500/10 to-emerald-500/5",  border: "border-emerald-500/20"  },
+    { icon: WifiOff,       label: "Perangkat Offline",   value: offlineCount,  sub: "perlu perhatian",     color: "text-rose-400",    bg: "bg-gradient-to-br from-rose-500/10 to-rose-500/5",    border: "border-rose-500/20"    },
+    { icon: CheckCircle2,  label: "Diselesaikan",        value: resolvedCount, sub: "total tertangani",    color: "text-sky-400",   bg: "bg-gradient-to-br from-sky-500/10 to-sky-500/5",   border: "border-sky-500/20"   },
     { icon: Activity,      label: "Kesehatan Sistem",
       value: `${Math.round((activeCount / Math.max(devices.length, 1)) * 100)}%`,
-      sub: "uptime perangkat", color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20" },
+      sub: "uptime perangkat", color: "text-cyan-400", bg: "bg-gradient-to-br from-cyan-500/10 to-cyan-500/5", border: "border-cyan-500/20" },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-white">
 
       {/* ── Sticky header ── */}
-      <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-20">
+      <div className="border-b border-white/5 bg-slate-950/90 backdrop-blur-xl sticky top-14 z-20 shadow-sm shadow-black/5">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-blue-400 text-xs font-medium mb-0.5">
-              <Shield size={13} /> Admin Dashboard
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
+              <Shield size={14} strokeWidth={2} /> Admin Dashboard
             </div>
-            <h1 className="text-lg sm:text-xl font-extrabold">Pusat Kendali S-Rotem</h1>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">Pusat Kendali S-Rotem</h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
-              <RefreshCw size={11} className="animate-spin" style={{ animationDuration: "4s" }} />
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <RefreshCw size={12} className="animate-spin" style={{ animationDuration: "4s" }} />
             </div>
             {user && (
-              <span className="hidden sm:inline text-xs text-gray-500 truncate max-w-[140px]">{user.email}</span>
+              <span className="hidden sm:inline text-xs text-slate-400 truncate max-w-[140px]">{user.email}</span>
             )}
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-red-600/20 hover:text-red-400 hover:border-red-500/30 border border-white/10 px-3 py-1.5 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 border border-white/10 px-3 py-1.5 rounded-lg transition-all duration-200"
             >
-              <LogOut size={12} /> <span className="hidden sm:inline">Keluar</span>
+              <LogOut size={13} strokeWidth={2} /> <span className="hidden sm:inline">Keluar</span>
             </button>
           </div>
         </div>
@@ -110,15 +110,18 @@ export default function DashboardPage() {
               initial="hidden"
               animate="show"
               variants={fadeUp}
-              className={`border rounded-2xl p-4 flex flex-col gap-2 ${w.bg} ${w.border}`}
+              className={`group relative border rounded-2xl p-4 flex flex-col gap-2.5 ${w.bg} ${w.border} hover:border-white/20 hover:shadow-lg hover:shadow-black/10 transition-all duration-300 overflow-hidden`}
             >
-              <div className={`p-2 rounded-xl bg-white/10 w-fit ${w.color}`}>
-                <w.icon size={16} />
+              {/* Hover gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-white/0 group-hover:from-white/5 group-hover:to-transparent transition-all duration-500 rounded-2xl" />
+              
+              <div className={`relative p-2.5 rounded-xl bg-gradient-to-br from-white/10 to-white/5 w-fit ${w.color} group-hover:scale-110 transition-transform duration-300`}>
+                <w.icon size={18} strokeWidth={2} />
               </div>
-              <p className={`text-2xl font-extrabold ${w.color}`}>{w.value}</p>
-              <div>
+              <p className={`relative text-2xl font-bold ${w.color} tracking-tight`}>{w.value}</p>
+              <div className="relative">
                 <p className="text-xs font-semibold text-white leading-tight">{w.label}</p>
-                <p className="text-[10px] text-gray-500 mt-0.5">{w.sub}</p>
+                <p className="text-[10px] text-slate-500 mt-1">{w.sub}</p>
               </div>
             </motion.div>
           ))}
@@ -136,24 +139,24 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="xl:col-span-2 bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col xl:self-stretch"
+            className="xl:col-span-2 bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden flex flex-col xl:self-stretch shadow-lg shadow-black/5"
           >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/5 flex-shrink-0 bg-white/[0.02]">
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <Map size={14} className="text-blue-400" />
+                <Map size={15} className="text-emerald-400" strokeWidth={2} />
                 Peta Semua Titik
               </div>
-              <Link href="/map" className="flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors">
-                Buka Penuh <ChevronRight size={12} />
+              <Link href="/map" className="flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+                Buka Penuh <ChevronRight size={13} />
               </Link>
             </div>
             <div className="h-72 sm:h-96 xl:flex-1 xl:min-h-0">
               <DashboardMap reports={reports} devices={devices} />
             </div>
             {/* Map legend strip */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1 px-4 py-2.5 border-t border-white/10 text-[10px] text-gray-400">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 px-4 py-3 border-t border-white/5 text-[10px] text-slate-400 bg-white/[0.02]">
               {[["🚦","Traffic Light"],["💡","Lampu"],["🏫","ZoSS"],["📷","Kamera"],["🚨","Kecelakaan"],["⚠️","Laporan"]].map(([e,l]) => (
-                <span key={l} className="flex items-center gap-1">{e} {l}</span>
+                <span key={l} className="flex items-center gap-1.5">{e} {l}</span>
               ))}
             </div>
           </motion.div>
@@ -166,10 +169,10 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 }}
-              className="flex-1 min-h-0 bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3 overflow-hidden"
+              className="flex-1 min-h-0 bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 overflow-hidden shadow-lg shadow-black/5"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <Activity size={14} className="text-green-400" />
+                <Activity size={15} className="text-emerald-400" strokeWidth={2} />
                 Aktivitas Real-Time
               </div>
               <ActivityFeed />
@@ -180,20 +183,20 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3"
+              className="bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg shadow-black/5"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <TrendingUp size={14} className="text-purple-400" />
+                <TrendingUp size={15} className="text-purple-400" strokeWidth={2} />
                 Top Kejadian Minggu Ini
               </div>
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {TOP_EVENTS.map((e) => (
                   <div key={e.type}>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-1.5">
                       <span className={`text-xs font-medium ${e.color}`}>{e.type}</span>
                       <span className="text-xs font-bold text-white">{e.count}</span>
                     </div>
-                    <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                       <motion.div
                         className={`h-full rounded-full ${e.bar}`}
                         initial={{ width: 0 }}
@@ -211,22 +214,22 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3"
+              className="bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg shadow-black/5"
             >
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <Cpu size={14} className="text-cyan-400" />
+                <Cpu size={15} className="text-cyan-400" strokeWidth={2} />
                 Status Subsistem
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {systemStatus.map((s) => {
                   const pct = s.total === 0 ? 0 : Math.round((s.online / s.total) * 100);
-                  const bar = pct === 100 ? "bg-green-500" : pct >= 50 ? "bg-yellow-500" : "bg-red-500";
-                  const dot = pct === 100 ? "bg-green-400" : pct >= 50 ? "bg-yellow-400" : "bg-red-500";
+                  const bar = pct === 100 ? "bg-emerald-500" : pct >= 50 ? "bg-amber-500" : "bg-rose-500";
+                  const dot = pct === 100 ? "bg-emerald-400" : pct >= 50 ? "bg-amber-400" : "bg-rose-500";
                   return (
                     <div key={s.type} className="flex items-center gap-3">
-                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dot}`} />
-                      <span className="text-xs text-gray-300 flex-1 truncate">{s.label}</span>
-                      <div className="w-16 h-1.5 bg-white/8 rounded-full overflow-hidden flex-shrink-0">
+                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dot} shadow-sm`} />
+                      <span className="text-xs text-slate-300 flex-1 truncate">{s.label}</span>
+                      <div className="w-16 h-2 bg-white/5 rounded-full overflow-hidden flex-shrink-0">
                         <motion.div
                           className={`h-full rounded-full ${bar}`}
                           initial={{ width: 0 }}
@@ -234,7 +237,7 @@ export default function DashboardPage() {
                           transition={{ duration: 0.7, ease: "easeOut", delay: 0.55 }}
                         />
                       </div>
-                      <span className="text-[10px] text-gray-500 w-8 text-right flex-shrink-0">{pct}%</span>
+                      <span className="text-[10px] text-slate-500 w-8 text-right flex-shrink-0">{pct}%</span>
                     </div>
                   );
                 })}
@@ -258,16 +261,16 @@ export default function DashboardPage() {
             >
               <Link
                 href={l.href}
-                className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl px-4 py-3.5 transition-colors group"
+                className="flex items-center gap-3 bg-gradient-to-br from-white/[0.07] to-white/[0.02] hover:from-white/[0.10] hover:to-white/[0.04] border border-white/10 hover:border-white/20 rounded-2xl px-4 py-3.5 transition-all duration-200 group shadow-sm hover:shadow-lg hover:shadow-black/10"
               >
-                <div className="p-2 rounded-xl bg-white/8 text-blue-400 flex-shrink-0">
-                  <l.icon size={15} />
+                <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 text-emerald-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                  <l.icon size={16} strokeWidth={2} />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-white truncate">{l.label}</p>
-                  <p className="text-[10px] text-gray-500 truncate">{l.sub}</p>
+                  <p className="text-[10px] text-slate-500 truncate">{l.sub}</p>
                 </div>
-                <ChevronRight size={14} className="text-gray-600 group-hover:text-gray-300 ml-auto flex-shrink-0 transition-colors" />
+                <ChevronRight size={15} className="text-slate-600 group-hover:text-slate-300 group-hover:translate-x-0.5 ml-auto flex-shrink-0 transition-all duration-200" strokeWidth={2} />
               </Link>
             </motion.div>
           ))}
@@ -281,15 +284,15 @@ export default function DashboardPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden"
+          className="bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden shadow-lg shadow-black/5"
         >
-          <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-white/10">
+          <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-white/5 bg-white/[0.02]">
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <FileText size={14} className="text-orange-400" />
+              <FileText size={15} className="text-orange-400" strokeWidth={2} />
               Laporan Terbaru
             </div>
-            <Link href="/dashboard/reports" className="flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors">
-              Lihat Semua <ChevronRight size={12} />
+            <Link href="/dashboard/reports" className="flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+              Lihat Semua <ChevronRight size={13} />
             </Link>
           </div>
 
@@ -297,24 +300,24 @@ export default function DashboardPage() {
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/8 text-gray-500 text-[11px] uppercase tracking-wide">
-                  <th className="text-left px-5 py-2.5 font-medium">ID</th>
-                  <th className="text-left px-5 py-2.5 font-medium">Jenis</th>
-                  <th className="text-left px-5 py-2.5 font-medium">Lokasi</th>
-                  <th className="text-left px-5 py-2.5 font-medium">Tingkat</th>
-                  <th className="text-left px-5 py-2.5 font-medium">Status</th>
-                  <th className="text-left px-5 py-2.5 font-medium">Waktu</th>
+                <tr className="border-b border-white/5 text-slate-500 text-[11px] uppercase tracking-wide bg-white/[0.02]">
+                  <th className="text-left px-5 py-3 font-medium">ID</th>
+                  <th className="text-left px-5 py-3 font-medium">Jenis</th>
+                  <th className="text-left px-5 py-3 font-medium">Lokasi</th>
+                  <th className="text-left px-5 py-3 font-medium">Tingkat</th>
+                  <th className="text-left px-5 py-3 font-medium">Status</th>
+                  <th className="text-left px-5 py-3 font-medium">Waktu</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {reports.slice(0, 6).map((r) => (
-                  <tr key={r.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-3 font-mono text-gray-500 text-[10px]">{r.id.slice(0, 10)}…</td>
-                    <td className="px-5 py-3 font-medium text-white">{r.type}</td>
-                    <td className="px-5 py-3 text-gray-400 max-w-[180px] truncate">{r.location}</td>
-                    <td className="px-5 py-3"><SevBadge sev={r.severity} /></td>
-                    <td className="px-5 py-3"><StatusBadge status={r.status} /></td>
-                    <td className="px-5 py-3 text-gray-500">{new Date(r.timestamp).toLocaleDateString("id-ID", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" })}</td>
+                  <tr key={r.id} className="hover:bg-white/[0.04] transition-colors">
+                    <td className="px-5 py-4 font-mono text-slate-500 text-[10px]">{r.id.slice(0, 10)}…</td>
+                    <td className="px-5 py-4 font-medium text-white">{r.type}</td>
+                    <td className="px-5 py-4 text-slate-400 max-w-[180px] truncate">{r.location}</td>
+                    <td className="px-5 py-4"><SevBadge sev={r.severity} /></td>
+                    <td className="px-5 py-4"><StatusBadge status={r.status} /></td>
+                    <td className="px-5 py-4 text-slate-500">{new Date(r.timestamp).toLocaleDateString("id-ID", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -324,13 +327,13 @@ export default function DashboardPage() {
           {/* Mobile card list */}
           <div className="sm:hidden divide-y divide-white/5">
             {reports.slice(0, 5).map((r) => (
-              <div key={r.id} className="px-4 py-3 flex items-start gap-3">
+              <div key={r.id} className="px-4 py-3.5 flex items-start gap-3 hover:bg-white/[0.04] transition-colors">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
+                  <div className="flex items-center gap-2 mb-1">
                     <p className="text-xs font-semibold text-white truncate">{r.type}</p>
                     <SevBadge sev={r.severity} />
                   </div>
-                  <p className="text-[10px] text-gray-400 truncate">{r.location}</p>
+                  <p className="text-[10px] text-slate-400 truncate">{r.location}</p>
                 </div>
                 <StatusBadge status={r.status} />
               </div>
@@ -345,31 +348,31 @@ export default function DashboardPage() {
 
 // ── Tiny badge helpers ─────────────────────────────────────────────
 const SEV_MAP = {
-  critical: "bg-red-500/15 text-red-400 border-red-500/30",
+  critical: "bg-rose-500/15 text-rose-400 border-rose-500/30",
   high:     "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  medium:   "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  low:      "bg-green-500/15 text-green-400 border-green-500/30",
+  medium:   "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  low:      "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
 };
 const SEV_LABEL = { critical: "Kritis", high: "Tinggi", medium: "Sedang", low: "Rendah" };
 
 function SevBadge({ sev }: { sev: keyof typeof SEV_MAP }) {
   return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${SEV_MAP[sev]}`}>
+    <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border ${SEV_MAP[sev]}`}>
       {SEV_LABEL[sev]}
     </span>
   );
 }
 
 const STATUS_MAP = {
-  active:   "bg-green-500/15 text-green-400 border-green-500/30",
-  pending:  "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  resolved: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  active:   "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  pending:  "bg-amber-500/15 text-amber-400 border-amber-500/30",
+  resolved: "bg-sky-500/15 text-sky-400 border-sky-500/30",
 };
 const STATUS_LABEL = { active: "Aktif", pending: "Menunggu", resolved: "Selesai" };
 
 function StatusBadge({ status }: { status: keyof typeof STATUS_MAP }) {
   return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${STATUS_MAP[status]}`}>
+    <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border ${STATUS_MAP[status]}`}>
       {STATUS_LABEL[status]}
     </span>
   );

@@ -13,16 +13,16 @@ import { formatDate } from "@/lib/utils";
 import { toggleDevicePin } from "@/lib/esp32";
 
 const TYPE_META: Record<Device["type"], { label: string; icon: React.ElementType; color: string; bg: string; border: string }> = {
-  camera:          { label: "Kamera",        icon: Camera,      color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20"   },
-  lamp:            { label: "Lampu Jalan",   icon: Lightbulb,   color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
-  "traffic-light": { label: "Traffic Light", icon: TrafficCone, color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20"  },
-  sensor:          { label: "ZoSS / Sensor", icon: Cpu,         color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
+  camera:          { label: "Kamera",        icon: Camera,      color: "text-sky-400",     bg: "bg-gradient-to-br from-sky-500/10 to-sky-500/5",     border: "border-sky-500/20"     },
+  lamp:            { label: "Lampu Jalan",   icon: Lightbulb,   color: "text-amber-400",   bg: "bg-gradient-to-br from-amber-500/10 to-amber-500/5", border: "border-amber-500/20"   },
+  "traffic-light": { label: "Traffic Light", icon: TrafficCone, color: "text-emerald-400", bg: "bg-gradient-to-br from-emerald-500/10 to-emerald-500/5", border: "border-emerald-500/20" },
+  sensor:          { label: "ZoSS / Sensor", icon: Cpu,         color: "text-purple-400",  bg: "bg-gradient-to-br from-purple-500/10 to-purple-500/5",  border: "border-purple-500/20"  },
 };
 
 const STATUS_META = {
-  active:  { label: "Online",  dot: "bg-green-400",  badge: "bg-green-400/10 text-green-400 border-green-400/20"   },
-  offline: { label: "Offline", dot: "bg-red-400",    badge: "bg-red-400/10 text-red-400 border-red-400/20"         },
-  pending: { label: "Pending", dot: "bg-yellow-400", badge: "bg-yellow-400/10 text-yellow-400 border-yellow-400/20" },
+  active:  { label: "Online",  dot: "bg-emerald-400",  badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"   },
+  offline: { label: "Offline", dot: "bg-rose-400",     badge: "bg-rose-500/10 text-rose-400 border-rose-500/20"            },
+  pending: { label: "Pending", dot: "bg-amber-400",    badge: "bg-amber-500/10 text-amber-400 border-amber-500/20"         },
 };
 
 const FILTER_TYPES: (Device["type"] | "all")[] = ["all", "camera", "lamp", "traffic-light", "sensor"];
@@ -313,24 +313,24 @@ export default function DevicesPage() {
   const offlineCount = devices.length - activeCount;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-20">
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="border-b border-white/5 bg-slate-950/90 backdrop-blur-xl sticky top-14 z-20 shadow-sm shadow-black/5">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-blue-400 text-xs font-medium mb-0.5">
-              <Shield size={13} /> Manajemen Perangkat
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
+              <Shield size={14} strokeWidth={2} /> Manajemen Perangkat
             </div>
-            <h1 className="text-lg sm:text-xl font-extrabold">Perangkat IoT</h1>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">Perangkat IoT</h1>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setEditDevice("new")}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-colors"
+              className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25"
             >
-              <Plus size={13} /> Tambah
+              <Plus size={14} strokeWidth={2} /> Tambah
             </button>
             <button onClick={refreshDevices} className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-xl transition-colors">
-              <RefreshCw size={12} /> Refresh
+              <RefreshCw size={13} strokeWidth={2} /> Refresh
             </button>
           </div>
         </div>
@@ -347,12 +347,12 @@ export default function DevicesPage() {
             const bar  = pct === 100 ? "bg-green-500" : pct >= 50 ? "bg-yellow-500" : "bg-red-500";
             return (
               <motion.div key={s.type} custom={i} initial="hidden" animate="show" variants={fadeUp}
-                className={`border rounded-2xl p-4 flex flex-col gap-2 ${meta.bg} ${meta.border}`}>
-                <div className={`p-2 rounded-xl bg-white/10 w-fit ${meta.color}`}><Icon size={15} /></div>
-                <p className={`text-2xl font-extrabold ${meta.color}`}>{s.online}<span className="text-sm font-normal text-gray-500">/{s.total}</span></p>
+                className={`group border rounded-2xl p-4 flex flex-col gap-2.5 ${meta.bg} ${meta.border} hover:border-white/20 hover:shadow-lg hover:shadow-black/10 transition-all duration-300`}>
+                <div className={`p-2.5 rounded-xl bg-gradient-to-br from-white/10 to-white/5 w-fit ${meta.color} group-hover:scale-110 transition-transform duration-300`}><Icon size={16} strokeWidth={2} /></div>
+                <p className={`text-2xl font-bold ${meta.color} tracking-tight`}>{s.online}<span className="text-sm font-normal text-slate-500">/{s.total}</span></p>
                 <div>
                   <p className="text-xs font-semibold text-white leading-tight">{meta.label}</p>
-                  <div className="mt-1.5 h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className="mt-2 h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <motion.div className={`h-full rounded-full ${bar}`} initial={{ width: 0 }}
                       animate={{ width: `${pct}%` }} transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 + i * 0.05 }} />
                   </div>

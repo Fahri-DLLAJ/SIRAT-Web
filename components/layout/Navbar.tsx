@@ -23,22 +23,27 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-gray-950/90 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <Shield className="text-blue-400" size={22} />
-            <span className="text-white">S-Rotem</span>
+      {/* Modern Minimalist Navbar - Thin, Glassmorphic, High Contrast */}
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/5">
+        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+          {/* Brand - Refined Typography */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-shadow">
+              <Shield className="text-white" size={18} strokeWidth={2.5} />
+            </div>
+            <span className="font-semibold text-base tracking-tight text-white">S-Rotem</span>
           </Link>
 
-          <ul className="hidden md:flex items-center gap-1">
+          {/* Desktop Navigation - Minimal Spacing */}
+          <ul className="hidden md:flex items-center gap-0.5">
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                     pathname === l.href
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-300 hover:text-white hover:bg-white/10"
+                      ? "bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
                   {l.label}
@@ -47,27 +52,29 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-2 text-white">
+          {/* Right Actions - Integrated & Clean */}
+          <div className="flex items-center gap-1.5">
             <NotificationBell />
             {!isDashboard && (
               <Link
                 href="/dashboard"
-                className="hidden md:block text-sm bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded-lg transition-colors"
+                className="hidden md:flex items-center text-[13px] font-medium bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25 hover:-translate-y-0.5"
               >
                 Dashboard
               </Link>
             )}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-white/10"
+              className="md:hidden p-2 rounded-lg hover:bg-white/5 text-slate-300 hover:text-white transition-colors"
               onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
             >
-              <Menu size={20} />
+              <Menu size={20} strokeWidth={2} />
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer - Glassmorphic Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -75,20 +82,24 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 z-50"
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed top-0 right-0 h-full w-72 bg-gray-950 border-l border-white/10 z-50 p-6"
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-80 bg-slate-950/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 p-6"
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-bold text-white">Menu</span>
-                <button onClick={() => setMobileOpen(false)} className="p-1 hover:bg-white/10 rounded-lg">
-                  <X size={20} className="text-white" />
+                <span className="font-semibold text-white tracking-tight">Menu</span>
+                <button 
+                  onClick={() => setMobileOpen(false)} 
+                  className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X size={20} strokeWidth={2} />
                 </button>
               </div>
               <ul className="space-y-1">
@@ -97,10 +108,10 @@ export default function Navbar() {
                     <Link
                       href={l.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`block px-4 py-2.5 rounded-lg text-sm transition-colors ${
+                      className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                         pathname === l.href
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-300 hover:text-white hover:bg-white/10"
+                          ? "bg-emerald-500/10 text-emerald-400 shadow-sm"
+                          : "text-slate-300 hover:text-white hover:bg-white/5"
                       }`}
                     >
                       {l.label}
@@ -108,11 +119,11 @@ export default function Navbar() {
                   </li>
                 ))}
                 {!isDashboard && (
-                  <li>
+                  <li className="pt-2 mt-2 border-t border-white/5">
                     <Link
                       href="/dashboard"
                       onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10"
+                      className="block px-4 py-3 rounded-xl text-sm font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-all duration-200"
                     >
                       Dashboard
                     </Link>
