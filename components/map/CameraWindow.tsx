@@ -1,63 +1,30 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { getMjpegStreamUrl, getProcessedStreamUrl, getSnapshotUrl, getConfigPortalUrl } from "@/lib/esp32";
-import { X, Video, Cpu, Camera, AlertCircle, Loader2, Maximize2, Settings } from "lucide-react";
+import { useState } from "react";
+import { X, Video, Camera, AlertCircle, Maximize2, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   ip: string;
   deviceName?: string;
-  aiPort?: number;
   onClose: () => void;
 }
 
-type Mode = "stream" | "ai" | "snapshot";
+type Mode = "stream" | "snapshot";
 
-export default function CameraWindow({ ip, deviceName, aiPort = 5000, onClose }: Props) {
+export default function CameraWindow({ ip, deviceName, onClose }: Props) {
   const [mode, setMode]         = useState<Mode>("stream");
   const [error, setError]       = useState(false);
-  const [aiReady, setAiReady]   = useState(false);
-  const [checking, setChecking] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [snapKey, setSnapKey]   = useState(0);
 
-  // ── Wake the Python vision server when this window opens ──────────────────
-  useEffect(() => {
-    fetch("/api/camera", { method: "POST", body: JSON.stringify({ action: "wake" }), headers: { "Content-Type": "application/json" } })
-      .catch(() => {});
-
-    // Poll health until AI is ready (max 15s)
-    let attempts = 0;
-    setChecking(true);
-    const poll = setInterval(async () => {
-      attempts++;
-      try {
-        const res  = await fetch("/api/camera");
-        const data = await res.json();
-        if (data.active) {
-          setAiReady(true);
-          setChecking(false);
-          clearInterval(poll);
-        }
-      } catch { /* server not up yet */ }
-      if (attempts >= 15) {
-        setChecking(false);
-        clearInterval(poll);
-      }
-    }, 1000);
-
-    // ── Sleep the server when this window closes ───────────────────────────
-    return () => {
-      clearInterval(poll);
-      fetch("/api/camera", { method: "POST", body: JSON.stringify({ action: "sleep" }), headers: { "Content-Type": "application/json" } })
-        .catch(() => {});
-    };
-  }, []);
-
-  const src = useCallback(() => {
-    if (mode === "stream")   return getMjpegStreamUrl(ip);
-    if (mode === "ai")       return getProcessedStreamUrl(ip, aiPort);
-    return getSnapshotUrl(ip);
-  }, [mode, ip, aiPort]);
+  // Stream: load the device's own HTML viewer page in an iframe.
+  // This avoids all CORS/mixed-content issues — the browser loads a page
+  // from the device itself, which then loads the stream from the same origin.
+  // Snapshot: direct img request to port 81 (one-shot GETs are not blocked).
+  const src =
+    mode === "stream"
+      ? `http://${ip}/`
+      : `http://${ip}:81/capture?t=${snapKey}`;
 
   return (
     <AnimatePresence>
@@ -77,29 +44,20 @@ export default function CameraWindow({ ip, deviceName, aiPort = 5000, onClose }:
             <span className="text-sm font-semibold truncate max-w-[140px]">{deviceName ?? ip}</span>
           </div>
           <div className="flex items-center gap-1">
-            {/* Mode buttons */}
             <div className="flex items-center gap-0.5 bg-white/5 rounded-lg p-0.5 mr-1">
               <ModeBtn active={mode === "stream"} onClick={() => { setMode("stream"); setError(false); }} icon={<Video size={12} />} label="Live" />
-              <ModeBtn
-                active={mode === "ai"}
-                onClick={() => { setMode("ai"); setError(false); }}
-                icon={checking ? <Loader2 size={12} className="animate-spin" /> : <Cpu size={12} />}
-                label="AI"
-                disabled={!aiReady && !checking}
-                title={!aiReady ? "Python server belum siap" : undefined}
-              />
-              <ModeBtn active={mode === "snapshot"} onClick={() => { setMode("snapshot"); setError(false); }} icon={<Camera size={12} />} label="Foto" />
+              <ModeBtn active={mode === "snapshot"} onClick={() => { setMode("snapshot"); setError(false); setSnapKey(k => k + 1); }} icon={<Camera size={12} />} label="Foto" />
             </div>
-            <a
-              href={getConfigPortalUrl(ip)}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Open device config portal"
-              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <Settings size={14} className="text-gray-400" />
-            </a>
-            <button onClick={() => setFullscreen((f) => !f)} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+            {mode === "snapshot" && (
+              <button
+                onClick={() => setSnapKey(k => k + 1)}
+                className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                title="Refresh snapshot"
+              >
+                <RefreshCw size={14} className="text-gray-400" />
+              </button>
+            )}
+            <button onClick={() => setFullscreen(f => !f)} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
               <Maximize2 size={14} className="text-gray-400" />
             </button>
             <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
@@ -114,63 +72,55 @@ export default function CameraWindow({ ip, deviceName, aiPort = 5000, onClose }:
             <div className="flex flex-col items-center gap-2 text-gray-500 p-6">
               <AlertCircle size={28} />
               <p className="text-xs text-center">Tidak dapat terhubung ke {ip}</p>
-              <button onClick={() => setError(false)} className="text-xs text-blue-400 hover:underline">
+              <button
+                onClick={() => { setError(false); setSnapKey(k => k + 1); }}
+                className="text-xs text-blue-400 hover:underline"
+              >
                 Coba lagi
               </button>
             </div>
+          ) : mode === "stream" ? (
+            <iframe
+              key={src}
+              src={src}
+              className="w-full h-full border-0"
+              title={`Stream ${ip}`}
+              onError={() => setError(true)}
+            />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              key={src()}
-              src={src()}
-              alt={`Stream ${ip}`}
+              key={src}
+              src={src}
+              alt={`Snapshot ${ip}`}
               className="w-full h-full object-contain"
               onError={() => setError(true)}
             />
           )}
 
-          {/* Overlay badges */}
-          <div className="absolute top-2 left-2 flex gap-1.5">
+          <div className="absolute top-2 left-2">
             <span className="bg-black/70 backdrop-blur-sm text-[10px] text-white px-2 py-0.5 rounded-full">
-              {mode === "stream" ? "MJPEG Live" : mode === "ai" ? "AI Detection" : "Snapshot"}
+              {mode === "stream" ? "MJPEG Live" : "Snapshot"}
             </span>
-            {mode === "ai" && checking && (
-              <span className="bg-yellow-900/80 text-yellow-300 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1">
-                <Loader2 size={9} className="animate-spin" /> Menghubungkan…
-              </span>
-            )}
-            {mode === "ai" && !checking && !aiReady && (
-              <span className="bg-red-900/80 text-red-300 text-[10px] px-2 py-0.5 rounded-full">
-                Server tidak aktif
-              </span>
-            )}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-white/10 flex items-center justify-between flex-shrink-0">
+        <div className="px-4 py-2 border-t border-white/10">
           <span className="text-[10px] text-gray-500">{ip}</span>
-          {mode === "ai" && (
-            <span className="text-[10px] text-purple-400">Python · port {aiPort}</span>
-          )}
         </div>
       </motion.div>
     </AnimatePresence>
   );
 }
 
-function ModeBtn({
-  active, onClick, icon, label, disabled, title,
-}: {
-  active: boolean; onClick: () => void; icon: React.ReactNode;
-  label: string; disabled?: boolean; title?: string;
+function ModeBtn({ active, onClick, icon, label }: {
+  active: boolean; onClick: () => void; icon: React.ReactNode; label: string;
 }) {
   return (
     <button
       onClick={onClick}
-      disabled={disabled}
-      title={title}
-      className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+      className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] transition-colors ${
         active ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"
       }`}
     >

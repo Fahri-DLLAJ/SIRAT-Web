@@ -19,7 +19,7 @@ export function getProcessedStreamUrl(ip: string, port = 5000): string {
 
 /** Fetch a single JPEG snapshot from the ESP32-CAM. */
 export function getSnapshotUrl(ip: string): string {
-  return `http://${ip}/capture`;
+  return `http://${ip}:81/capture`;
 }
 
 /** Fetch device status JSON from the ESP32 firmware's /status endpoint. */
