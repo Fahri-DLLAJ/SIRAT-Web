@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 interface Props {
   ip: string;
   deviceName?: string;
+  aiPort?: number;
   onClose: () => void;
 }
 
