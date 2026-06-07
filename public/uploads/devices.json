@@ -1,14 +1,16 @@
 [
   {
     "id": "d1",
-    "name": "Kamera Simpang Pedan",
+    "name": "Kamera Simpang Utama",
     "type": "camera",
     "lat": -7.7059,
     "lng": 110.601,
     "status": "active",
-    "ip": "192.168.1.101",
+    "ip": "192.168.1.200",
+    "streamPort": 81,
     "lastSeen": "2026-05-07T14:00:00.000Z",
-    "description": ""
+    "description": "",
+    "aiPort": 5000
   },
   {
     "id": "d2",
@@ -48,10 +50,12 @@
     "type": "camera",
     "lat": -7.752,
     "lng": 110.491,
-    "status": "active",
+    "status": "offline",
     "ip": "192.168.1.105",
+    "streamPort": 81,
     "lastSeen": "2026-05-07T14:00:00.000Z",
-    "description": ""
+    "description": "",
+    "aiPort": 5000
   },
   {
     "id": "d7",

@@ -33,6 +33,8 @@ export interface Device {
   lng: number;
   status: "active" | "offline" | "pending";
   ip?: string;
+  streamPort?: number;  // port MJPEG stream ESP32-CAM (default 81)
+  aiPort?: number;      // port Python AI vision server (default 5000)
   lastSeen: string;
   description?: string;
 }

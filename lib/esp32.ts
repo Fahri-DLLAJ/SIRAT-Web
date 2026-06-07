@@ -1,11 +1,13 @@
 import axios from "axios";
 
 /**
- * Returns the MJPEG stream URL for a given ESP32-CAM IP.
+ * Returns the MJPEG stream URL for a given ESP32-CAM.
  * Use this as the `src` of an <img> tag — browsers handle MJPEG natively.
+ * @param ip        IP address of the ESP32-CAM
+ * @param port      MJPEG stream port (default 81, configurable per device)
  */
-export function getMjpegStreamUrl(ip: string): string {
-  return `http://${ip}:81/stream`;
+export function getMjpegStreamUrl(ip: string, port = 81): string {
+  return `http://${ip}:${port}/stream`;
 }
 
 /**
@@ -17,9 +19,12 @@ export function getProcessedStreamUrl(ip: string, port = 5000): string {
   return `http://${ip}:${port}/processed`;
 }
 
-/** Fetch a single JPEG snapshot from the ESP32-CAM. */
-export function getSnapshotUrl(ip: string): string {
-  return `http://${ip}:81/capture`;
+/** Fetch a single JPEG snapshot from the ESP32-CAM.
+ * @param ip    IP address of the ESP32-CAM
+ * @param port  Camera port (default 81, configurable per device)
+ */
+export function getSnapshotUrl(ip: string, port = 81): string {
+  return `http://${ip}:${port}/capture`;
 }
 
 /** Fetch device status JSON from the ESP32 firmware's /status endpoint. */

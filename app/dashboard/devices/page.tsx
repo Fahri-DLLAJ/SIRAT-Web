@@ -105,6 +105,8 @@ function DeviceModal({ initial, onSave, onClose, saving }: {
     lng:         initial?.lng  ?? null as number | null,
     status:      initial?.status      ?? "active" as Device["status"],
     ip:          initial?.ip          ?? "",
+    streamPort:  initial?.streamPort  ?? 81,
+    aiPort:      initial?.aiPort      ?? 5000,
     description: initial?.description ?? "",
   });
 
@@ -139,6 +141,32 @@ function DeviceModal({ initial, onSave, onClose, saving }: {
               />
             </div>
           ))}
+
+          {/* Stream port & AI port — hanya tampil untuk tipe camera */}
+          {form.type === "camera" && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-[11px] font-semibold text-gray-400 mb-1">Port Stream <span className="font-normal text-gray-600">(default: 81)</span></p>
+                <input
+                  type="number"
+                  value={form.streamPort}
+                  onChange={(e) => setForm({ ...form, streamPort: Number(e.target.value) || 81 })}
+                  placeholder="81"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50"
+                />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-gray-400 mb-1">Port AI <span className="font-normal text-gray-600">(default: 5000)</span></p>
+                <input
+                  type="number"
+                  value={form.aiPort}
+                  onChange={(e) => setForm({ ...form, aiPort: Number(e.target.value) || 5000 })}
+                  placeholder="5000"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Type & Status selects */}
           <div className="grid grid-cols-2 gap-3">
@@ -467,6 +495,9 @@ export default function DevicesPage() {
                     {device.ip && (
                       <div className="flex items-center gap-1.5"><Wifi size={11} className="flex-shrink-0" /><span className="font-mono">{device.ip}</span></div>
                     )}
+                    {device.type === "camera" && device.streamPort && (
+                      <div className="flex items-center gap-1.5"><span className="flex-shrink-0 text-[9px] font-bold text-sky-400">MJPEG</span><span className="font-mono">:{device.streamPort}</span>{device.aiPort && <><span className="text-[9px] font-bold text-purple-400 ml-1">AI</span><span className="font-mono">:{device.aiPort}</span></>}</div>
+                    )}
                     <div className="flex items-center gap-1.5"><MapPin size={11} className="flex-shrink-0" /><span>{device.lat.toFixed(4)}, {device.lng.toFixed(4)}</span></div>
                     <div className="flex items-center gap-1.5"><Clock size={11} className="flex-shrink-0" /><span>{formatDate(device.lastSeen)}</span></div>
                   </div>
@@ -519,7 +550,8 @@ export default function DevicesPage() {
                 </button>
               </div>
               <CameraStream ip={cameraDevice.ip!} deviceName={cameraDevice.name}
-                aiPort={Number(process.env.NEXT_PUBLIC_AI_STREAM_PORT) || 5000} />
+                streamPort={cameraDevice.streamPort ?? 81}
+                aiPort={cameraDevice.aiPort ?? 5000} />
             </motion.div>
           </motion.div>
         )}

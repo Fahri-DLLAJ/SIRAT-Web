@@ -17,8 +17,6 @@ import { formatDate } from "@/lib/utils";
 
 const MainMap = dynamic(() => import("@/components/map/MainMap"), { ssr: false });
 
-const AI_PORT = Number(process.env.NEXT_PUBLIC_AI_STREAM_PORT ?? 5000);
-
 const FILTERS: { id: FilterLayer; label: string; emoji: string; activeColor: string }[] = [
   { id: "all",      label: "Semua",       emoji: "🗺️", activeColor: "bg-blue-600 text-white border-blue-500"    },
   { id: "reports",  label: "Laporan",     emoji: "⚠️", activeColor: "bg-orange-600 text-white border-orange-500" },
@@ -262,10 +260,11 @@ export default function MapPage() {
                       className="flex-shrink-0 overflow-hidden"
                     >
                       <div className="p-3 pb-0">
-                        <CameraWindow
+                          <CameraWindow
                           ip={cameraDevice.ip}
                           deviceName={cameraDevice.name}
-                          aiPort={AI_PORT}
+                          streamPort={cameraDevice.streamPort ?? 81}
+                          aiPort={cameraDevice.aiPort ?? 5000}
                           onClose={() => setCameraDevice(null)}
                         />
                       </div>
@@ -362,7 +361,8 @@ export default function MapPage() {
                   <CameraWindow
                     ip={cameraDevice.ip}
                     deviceName={cameraDevice.name}
-                    aiPort={AI_PORT}
+                    streamPort={cameraDevice.streamPort ?? 81}
+                    aiPort={cameraDevice.aiPort ?? 5000}
                     onClose={() => setCameraDevice(null)}
                   />
                 </div>
