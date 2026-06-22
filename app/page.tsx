@@ -46,7 +46,7 @@ const NEWS_ITEMS = [
 const EMERGENCY_STEPS = [
   { step: "01", title: "Amankan Lokasi", desc: "Nyalakan lampu hazard dan pasang segitiga pengaman 50m di belakang kendaraan." },
   { step: "02", title: "Hubungi Bantuan", desc: "Segera hubungi 110 (Polisi), 118 (Ambulans), atau 113 (Pemadam Kebakaran)." },
-  { step: "03", title: "Laporkan via S-Rotem", desc: "Gunakan fitur Laporan Insiden untuk mengirim lokasi dan foto kejadian secara real-time." },
+  { step: "03", title: "Laporkan via SIRAT", desc: "Gunakan fitur Laporan Insiden untuk mengirim lokasi dan foto kejadian secara real-time." },
   { step: "04", title: "Bantu Korban", desc: "Jika aman, berikan pertolongan pertama sambil menunggu petugas tiba di lokasi." },
 ];
 
@@ -56,11 +56,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>SIRAT — Smart Intelligent Road Traffic</title>
+      <meta name="description" content="SIRAT mengintegrasikan kamera ESP32-CAM, sensor IoT, dan partisipasi masyarakat untuk memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time." />
       {/* ── Hero Section ── */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-gray-950 to-gray-950" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.15)_0%,_transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/20 via-gray-950 to-gray-950" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(16,185,129,0.12)_0%,_transparent_60%)]" />
         {/* Grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -76,7 +78,7 @@ export default function HomePage() {
               className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6"
             >
               Platform{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400">
                 Keselamatan Jalan
               </span>{" "}
               Pintar
@@ -88,7 +90,7 @@ export default function HomePage() {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="text-gray-400 text-lg mb-8 max-w-lg leading-relaxed"
             >
-              S-Rotem mengintegrasikan kamera ESP32-CAM, sensor IoT, dan partisipasi masyarakat untuk memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time.
+              SIRAT (Smart Intelligent Road Traffic) mengintegrasikan kamera ESP32-CAM, sensor IoT, dan partisipasi masyarakat untuk memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time.
             </motion.p>
 
             <motion.div
@@ -106,7 +108,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/map"
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-blue-900/30"
+                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-emerald-900/30"
               >
                 <Map size={18} />
                 Lihat Peta
@@ -128,7 +130,7 @@ export default function HomePage() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="hidden lg:block"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-900/20">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-emerald-900/10">
               <MapPreview
                 center={[-7.7059, 110.6010]}
                 zoom={12}
@@ -159,7 +161,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard icon={AlertTriangle} label="Laporan Hari Ini" value={todayCount} sub="Insiden tercatat" color="text-red-400" delay={0} />
           <StatCard icon={Cpu} label="Perangkat Aktif" value={activeCount} sub="Kamera & sensor online" color="text-green-400" delay={0.1} />
-          <StatCard icon={CheckCircle} label="Insiden Diselesaikan" value={resolvedCount} sub="Total tertangani" color="text-blue-400" delay={0.2} />
+          <StatCard icon={CheckCircle} label="Insiden Diselesaikan" value={resolvedCount} sub="Total tertangani" color="text-emerald-400" delay={0.2} />
         </div>
       </section>
 
@@ -173,13 +175,13 @@ export default function HomePage() {
             className="flex items-center justify-between mb-10"
           >
             <div>
-              <div className="flex items-center gap-2 text-blue-400 text-sm font-medium mb-2">
+              <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium mb-2">
                 <BookOpen size={16} />
                 Edukasi Keselamatan
               </div>
               <h2 className="text-2xl font-bold">Tips Berkendara Aman</h2>
             </div>
-            <Link href="/education" className="hidden sm:flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/education" className="hidden sm:flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
               Lihat Semua <ChevronRight size={16} />
             </Link>
           </motion.div>
@@ -221,7 +223,7 @@ export default function HomePage() {
             </div>
             <h2 className="text-2xl font-bold">Update Terkini</h2>
           </div>
-          <Link href="/news" className="hidden sm:flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+          <Link href="/news" className="hidden sm:flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
             Lihat Semua <ChevronRight size={16} />
           </Link>
         </motion.div>
@@ -244,7 +246,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-xs text-gray-500">{item.time}</span>
               </div>
-              <h3 className="font-semibold text-sm mb-2 group-hover:text-blue-400 transition-colors leading-snug">{item.title}</h3>
+              <h3 className="font-semibold text-sm mb-2 group-hover:text-emerald-400 transition-colors leading-snug">{item.title}</h3>
               <p className="text-gray-400 text-xs leading-relaxed">{item.desc}</p>
             </motion.article>
           ))}
@@ -317,7 +319,7 @@ export default function HomePage() {
         >
           <h2 className="text-3xl font-extrabold mb-4">
             Bersama Kita Jaga{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400">
               Keselamatan Jalan
             </span>
           </h2>
@@ -325,7 +327,7 @@ export default function HomePage() {
             Setiap laporan yang Anda kirim membantu petugas merespons lebih cepat dan menyelamatkan lebih banyak nyawa.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/report" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-blue-900/30">
+            <Link href="/report" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-emerald-900/30">
               Mulai Melapor
             </Link>
 

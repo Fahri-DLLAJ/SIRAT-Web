@@ -111,7 +111,7 @@ const EMERGENCY_STEPS = [
     step: "03",
     title: "Kirim Laporan",
     color: "text-yellow-400",
-    desc: "Gunakan fitur Laporan Insiden S-Rotem untuk mengirim lokasi GPS dan foto kejadian secara real-time kepada petugas terkait.",
+    desc: "Gunakan fitur Laporan Insiden SIRAT untuk mengirim lokasi GPS dan foto kejadian secara real-time kepada petugas terkait.",
   },
 ];
 
@@ -179,6 +179,8 @@ export default function EducationPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>Edukasi Keselamatan Jalan — SIRAT</title>
+      <meta name="description" content="Pelajari panduan keselamatan jalan raya, ikuti kuis interaktif, dan ketahui prosedur tanggap darurat lalu lintas bersama SIRAT." />
       {/* ── Hero ── */}
       <section className="relative pt-24 pb-14 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-gray-950 to-gray-950" />

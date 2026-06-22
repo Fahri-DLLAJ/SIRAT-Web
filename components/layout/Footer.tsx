@@ -11,10 +11,10 @@ export default function Footer() {
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20">
               <Shield size={16} className="text-white" strokeWidth={2.5} />
             </div>
-            <span className="font-semibold text-white tracking-tight">S-Rotem</span>
+            <span className="font-semibold text-white tracking-tight">SIRAT</span>
           </div>
           <p className="text-slate-400 leading-relaxed text-[13px]">
-            Platform Keselamatan Jalan Pintar — memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time.
+            <strong>Smart Intelligent Road Traffic (SIRAT)</strong> — Platform Keselamatan Jalan Pintar untuk memantau, melaporkan, dan merespons kondisi lalu lintas secara real-time.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function Footer() {
       {/* Copyright */}
       <div className="max-w-7xl mx-auto px-6 mt-10 pt-8 border-t border-white/5 text-center">
         <p className="text-xs text-slate-500 tracking-wide">
-          © {new Date().getFullYear()} S-Rotem — Sistem Monitoring Keselamatan Jalan
+          © {new Date().getFullYear()} SIRAT — Sistem Monitoring Keselamatan Jalan
         </p>
       </div>
     </footer>

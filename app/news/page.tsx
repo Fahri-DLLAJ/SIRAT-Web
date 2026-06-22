@@ -196,6 +196,8 @@ export default function NewsPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>Update Terkini & Info Lalu Lintas — SIRAT</title>
+      <meta name="description" content="Informasi kondisi lalu lintas, penutupan jalan, pengerjaan jalan, cuaca, dan info lalu lintas terkini lainnya dari platform SIRAT." />
 
       {/* ── Sticky header ── */}
       <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-20">

@@ -45,7 +45,7 @@ function FieldInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
     />
   );
 }
@@ -130,8 +130,8 @@ export default function ReportPage() {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 size={32} className="text-blue-400" />
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={32} className="text-emerald-400" />
             </div>
             <h1 className="text-2xl font-bold mb-1">Laporan Terkirim!</h1>
             <p className="text-gray-400 text-sm">
@@ -155,17 +155,17 @@ export default function ReportPage() {
                   <div key={step.key} className="flex items-start gap-3">
                     <div className="flex flex-col items-center pt-0.5">
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                        done ? "border-blue-500 bg-blue-500/20" : "border-white/10 bg-white/5"
+                        done ? "border-emerald-500 bg-emerald-500/20" : "border-white/10 bg-white/5"
                       }`}>
                         {active
-                          ? <Loader2 size={14} className="text-blue-400 animate-spin" />
+                          ? <Loader2 size={14} className="text-emerald-400 animate-spin" />
                           : done
                             ? <Icon size={14} className={step.color} />
                             : <span className="w-2 h-2 rounded-full bg-white/20" />
                         }
                       </div>
                       {i < TRACKING_STEPS.length - 1 && (
-                        <div className={`w-0.5 h-5 mt-1 ${done ? "bg-blue-500/40" : "bg-white/10"}`} />
+                        <div className={`w-0.5 h-5 mt-1 ${done ? "bg-emerald-500/40" : "bg-white/10"}`} />
                       )}
                     </div>
                     <div className="pt-1">
@@ -194,6 +194,8 @@ export default function ReportPage() {
   // ── Form ───────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>Laporkan Insiden & Gangguan Jalan — SIRAT</title>
+      <meta name="description" content="Kirim laporan insiden lalu lintas, jalan rusak, lampu mati, atau kecelakaan secara real-time disertai koordinat GPS dan foto ke platform SIRAT." />
       {/* ── Page header ── */}
       <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -310,7 +312,7 @@ export default function ReportPage() {
                   <select
                     value={form.type}
                     onChange={(e) => update("type", e.target.value as IncidentType)}
-                    className="w-full appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors pr-10"
+                    className="w-full appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors pr-10"
                   >
                     <option value="" disabled className="bg-gray-900">Pilih jenis insiden…</option>
                     {INCIDENT_TYPES.map((t) => (
@@ -353,7 +355,7 @@ export default function ReportPage() {
                 placeholder="Ceritakan urutan kejadian secara singkat dan jelas…"
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
               />
               <p className="text-[11px] text-gray-600 mt-1 text-right">{form.description.length} karakter</p>
             </Card>
@@ -368,7 +370,7 @@ export default function ReportPage() {
                 type="button"
                 onClick={getLocation}
                 disabled={locLoading}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3 disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3 disabled:opacity-60"
               >
                 {locLoading
                   ? <><Loader2 size={14} className="animate-spin" /> Mendeteksi lokasi…</>
@@ -385,9 +387,9 @@ export default function ReportPage() {
               )}
 
               {form.locationLabel && (
-                <div className="flex items-start gap-2 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2.5 mb-3">
-                  <MapPin size={13} className="text-blue-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-300 leading-relaxed">{form.locationLabel}</p>
+                <div className="flex items-start gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2.5 mb-3">
+                  <MapPin size={13} className="text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-emerald-300 leading-relaxed">{form.locationLabel}</p>
                 </div>
               )}
 
@@ -439,7 +441,7 @@ export default function ReportPage() {
                     <div className="flex items-center gap-2 min-w-0">
                       {mediaType === "video"
                         ? <Video size={13} className="text-purple-400 flex-shrink-0" />
-                        : <ImageIcon size={13} className="text-blue-400 flex-shrink-0" />
+                        : <ImageIcon size={13} className="text-emerald-400 flex-shrink-0" />
                       }
                       <span className="text-[11px] text-white/80 truncate">
                         {(form.imageFile ?? form.videoFile)?.name}
@@ -452,7 +454,7 @@ export default function ReportPage() {
                       <button
                         type="button"
                         onClick={() => mediaRef.current?.click()}
-                        className="text-[11px] text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors"
+                        className="text-[11px] text-emerald-400 hover:text-emerald-300 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors"
                       >
                         Ganti
                       </button>
@@ -470,7 +472,7 @@ export default function ReportPage() {
                 <button
                   type="button"
                   onClick={() => mediaRef.current?.click()}
-                  className="w-full flex flex-col items-center gap-3 border-2 border-dashed border-white/10 hover:border-blue-500/40 hover:bg-blue-500/5 rounded-xl py-8 transition-colors group mb-3"
+                  className="w-full flex flex-col items-center gap-3 border-2 border-dashed border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 rounded-xl py-8 transition-colors group mb-3"
                 >
                   <div className="flex items-center gap-3 text-gray-500 group-hover:text-gray-400 transition-colors">
                     <ImageIcon size={22} />
@@ -489,7 +491,7 @@ export default function ReportPage() {
                 <Camera size={13} className="text-gray-400 mt-0.5 flex-shrink-0" />
                 <p className="text-[11px] text-gray-400 leading-relaxed">
                   Kamera live ESP32-CAM tersedia di{" "}
-                  <a href="/map" className="text-blue-400 underline">Peta Monitoring</a>.
+                  <a href="/map" className="text-emerald-400 underline">Peta Monitoring</a>.
                 </p>
               </div>
             </Card>
@@ -516,7 +518,7 @@ export default function ReportPage() {
               </div>
               <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-blue-500 rounded-full"
+                  className="h-full bg-emerald-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${uploadProgress}%` }}
                   transition={{ duration: 0.3 }}
@@ -541,7 +543,7 @@ export default function ReportPage() {
             type="button"
             onClick={submit}
             disabled={tracking === "submitting" || !form.type || form.lat === null}
-            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-colors text-base shadow-lg shadow-blue-900/30"
+            className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl transition-colors text-base shadow-lg shadow-emerald-900/30"
           >
             {tracking === "submitting"
               ? <><Loader2 size={18} className="animate-spin" /> Mengirim Laporan…</>
@@ -569,7 +571,7 @@ function Card({
   return (
     <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5">
       <div className="flex items-center gap-2 text-gray-200 text-sm font-semibold mb-4">
-        <span className="text-blue-400">{icon}</span>
+        <span className="text-emerald-400">{icon}</span>
         {title}
       </div>
       {children}

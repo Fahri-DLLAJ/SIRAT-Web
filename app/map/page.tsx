@@ -84,6 +84,8 @@ export default function MapPage() {
 
   return (
     <div className="bg-slate-950 text-white">
+      <title>Peta Monitoring Lalu Lintas — SIRAT</title>
+      <meta name="description" content="Peta pemantauan lalu lintas real-time Kabupaten Klaten. Lihat kamera CCTV, status perangkat IoT, dan laporan insiden aktif di SIRAT." />
 
       {/* ══════════════════════════════════════════════════════════════════
           TOP BAR — fixed below the navbar

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const SESSION_KEY = "srotem_admin_session";
+const SESSION_KEY = "sirat_admin_session";
 const VALID_EMAIL    = process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMAIL    ?? "";
 const VALID_PASSWORD = process.env.NEXT_PUBLIC_FIREBASE_AUTH_PASSWORD ?? "";
 

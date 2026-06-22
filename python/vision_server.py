@@ -1,6 +1,6 @@
 """
-S-Rotem Vision Server
----------------------
+SIRAT Vision Server
+-------------------
 Pulls the MJPEG stream from an ESP32-CAM, runs OpenCV-based object/vehicle
 detection, and re-serves the annotated frames as a new MJPEG stream.
 
@@ -104,7 +104,7 @@ def detect_and_annotate(frame: np.ndarray) -> np.ndarray:
     # ── Timestamp overlay ─────────────────────────────────────────────────────
     ts = time.strftime("%Y-%m-%d %H:%M:%S")
     cv2.putText(out, ts, (8, h - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (200, 200, 200), 1, cv2.LINE_AA)
-    cv2.putText(out, "S-Rotem AI", (8, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 220, 255), 1, cv2.LINE_AA)
+    cv2.putText(out, "SIRAT AI", (8, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 220, 255), 1, cv2.LINE_AA)
 
     return out
 

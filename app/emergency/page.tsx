@@ -208,7 +208,7 @@ export default function EmergencyPage() {
 
   const shareLocation = useCallback(() => {
     if (!coords) return;
-    const text = `🚨 Lokasi Darurat S-Rotem\n📍 ${locationLabel ?? `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`}\n🗺️ https://maps.google.com/?q=${coords.lat},${coords.lng}`;
+    const text = `🚨 Lokasi Darurat SIRAT\n📍 ${locationLabel ?? `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`}\n🗺️ https://maps.google.com/?q=${coords.lat},${coords.lng}`;
     if (navigator.share) {
       navigator.share({ title: "Lokasi Darurat", text }).catch(() => {});
     } else {
@@ -220,6 +220,8 @@ export default function EmergencyPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>Kontak Darurat & Panduan Keselamatan — SIRAT</title>
+      <meta name="description" content="Akses cepat nomor bantuan darurat, bagikan lokasi GPS secara real-time, dan temukan rumah sakit terdekat dengan layanan darurat SIRAT." />
 
       {/* ── Sticky header ── */}
       <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-20">

@@ -15,7 +15,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <Loader2 size={28} className="text-blue-400 animate-spin" />
+        <Loader2 size={28} className="text-emerald-400 animate-spin" />
       </div>
     );
   }
@@ -45,10 +45,10 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mb-4">
-            <Shield size={28} className="text-blue-400" />
+          <div className="w-14 h-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center mb-4">
+            <Shield size={28} className="text-emerald-400" />
           </div>
-          <h1 className="text-xl font-extrabold">S-Rotem Admin</h1>
+          <h1 className="text-xl font-extrabold">SIRAT Admin</h1>
           <p className="text-gray-500 text-sm mt-1">Masuk untuk mengakses dashboard</p>
         </div>
 
@@ -62,7 +62,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
@@ -74,7 +74,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
@@ -88,7 +88,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors text-sm shadow-lg shadow-emerald-950/20"
           >
             {submitting ? <><Loader2 size={15} className="animate-spin" /> Masuk…</> : "Masuk"}
           </button>

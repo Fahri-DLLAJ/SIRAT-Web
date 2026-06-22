@@ -48,7 +48,7 @@ function SectionHeader({ icon, title, count, total, sysStatus }: {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
-        <div className="p-2 rounded-xl bg-white/8 text-blue-400 flex-shrink-0">{icon}</div>
+        <div className="p-2 rounded-xl bg-white/8 text-emerald-400 flex-shrink-0">{icon}</div>
         <div className="min-w-0">
           <h2 className="font-bold text-sm text-white truncate">{title}</h2>
           <p className="text-[11px] text-gray-500">{count}/{total} aktif</p>
@@ -109,7 +109,7 @@ function ZoSSBadges({ status }: { status: Device["status"] }) {
       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-green-500/20 text-green-400" : "bg-gray-700/50 text-gray-600"}`}>
         ZONA
       </span>
-      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-blue-500/20 text-blue-400" : "bg-gray-700/50 text-gray-600"}`}>
+      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-emerald-500/20 text-emerald-400" : "bg-gray-700/50 text-gray-600"}`}>
         SENSOR
       </span>
     </div>
@@ -133,7 +133,7 @@ function CameraStatus({ device: d }: { device: Device }) {
           href={`http://${d.ip}/capture`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-[10px] text-blue-400 hover:text-blue-300 transition-colors flex-shrink-0"
+          className="flex items-center gap-1 text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors flex-shrink-0"
         >
           <Camera size={11} /> Snapshot
         </a>
@@ -170,12 +170,14 @@ export default function StatusPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <title>Kondisi & Status Jaringan CCTV Real-Time — SIRAT</title>
+      <meta name="description" content="Pantau status operasional kamera pemantau lalu lintas, sensor IoT, serta jaringan CCTV keselamatan jalan Kabupaten Klaten di platform SIRAT." />
 
       {/* ── Sticky header ── */}
       <div className="border-b border-white/10 bg-gray-950/80 backdrop-blur-sm sticky top-16 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-blue-400 text-xs font-medium mb-0.5">
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-0.5">
               <Activity size={13} /> Kondisi Jalan
             </div>
             <h1 className="text-lg sm:text-xl font-extrabold">Status Jalan Real-Time</h1>
@@ -195,7 +197,7 @@ export default function StatusPage() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-3"
         >
           {[
-            { label: "Total Perangkat", value: devices.length,  icon: <Circle size={16} />,       color: "text-blue-400"   },
+            { label: "Total Perangkat", value: devices.length,  icon: <Circle size={16} />,       color: "text-emerald-400"   },
             { label: "Online",          value: totalOnline,      icon: <Wifi size={16} />,          color: "text-green-400"  },
             { label: "Offline",         value: totalOffline,     icon: <WifiOff size={16} />,       color: "text-red-400"    },
             { label: "Laporan Aktif",   value: activeReports.length, icon: <AlertTriangle size={16} />, color: "text-yellow-400" },
@@ -366,7 +368,7 @@ export default function StatusPage() {
               <div className="mt-3 pt-3 border-t border-white/5 flex flex-wrap gap-2">
                 {[
                   { label: "Zona Aktif",    value: sensors.filter((d) => d.status === "active").length,  color: "bg-green-500/10 text-green-400 border-green-500/20"  },
-                  { label: "Sensor Aktif",  value: sensors.filter((d) => d.status === "active").length,  color: "bg-blue-500/10 text-blue-400 border-blue-500/20"     },
+                  { label: "Sensor Aktif",  value: sensors.filter((d) => d.status === "active").length,  color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"     },
                   { label: "Peringatan",    value: sensors.filter((d) => d.status === "pending").length, color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" },
                 ].map((s) => (
                   <div key={s.label} className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border ${s.color}`}>
@@ -408,7 +410,7 @@ export default function StatusPage() {
                 </div>
                 <Link
                   href="/map"
-                  className="flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors"
+                  className="flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition-colors"
                 >
                   Lihat di Peta <ExternalLink size={11} />
                 </Link>
@@ -429,7 +431,7 @@ export default function StatusPage() {
           <Card>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-sm text-white flex items-center gap-2">
-                <Activity size={15} className="text-blue-400" />
+                <Activity size={15} className="text-emerald-400" />
                 Kesehatan Sistem Keseluruhan
               </h2>
               <span className="text-[11px] text-gray-500 flex items-center gap-1">
@@ -520,9 +522,9 @@ export default function StatusPage() {
           </Link>
           <Link
             href="/map"
-            className="flex items-center gap-3 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 rounded-2xl px-5 py-4 transition-colors group"
+            className="flex items-center gap-3 bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 rounded-2xl px-5 py-4 transition-colors group"
           >
-            <Activity size={20} className="text-blue-400 flex-shrink-0" />
+            <Activity size={20} className="text-emerald-400 flex-shrink-0" />
             <div>
               <p className="font-semibold text-sm text-white">Lihat Peta Monitoring</p>
               <p className="text-[11px] text-gray-400">Tampilkan semua perangkat di peta</p>

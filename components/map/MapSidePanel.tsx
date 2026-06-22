@@ -192,7 +192,7 @@ function TabBtn({ active, onClick, icon, label, count }: {
     <button
       onClick={onClick}
       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-        active ? "bg-blue-600 text-white shadow-sm" : "text-gray-400 hover:text-white"
+        active ? "bg-emerald-600 text-white shadow-sm" : "text-gray-400 hover:text-white"
       }`}
     >
       {icon}{label}

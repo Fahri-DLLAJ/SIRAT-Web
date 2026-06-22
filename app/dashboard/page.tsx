@@ -70,6 +70,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
+      <title>Pusat Kendali Admin — SIRAT</title>
+      <meta name="description" content="Dashboard Pusat Kendali SIRAT (Smart Intelligent Road Traffic) untuk memantau perangkat dan laporan insiden lalu lintas." />
 
       {/* ── Sticky header ── */}
       <div className="border-b border-white/5 bg-slate-950/90 backdrop-blur-xl sticky top-14 z-20 shadow-sm shadow-black/5">
@@ -78,7 +80,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium mb-1">
               <Shield size={14} strokeWidth={2} /> Admin Dashboard
             </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight">Pusat Kendali S-Rotem</h1>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight">Pusat Kendali SIRAT</h1>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-xs text-slate-500">

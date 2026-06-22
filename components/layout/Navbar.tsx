@@ -31,7 +31,7 @@ export default function Navbar() {
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-shadow">
               <Shield className="text-white" size={18} strokeWidth={2.5} />
             </div>
-            <span className="font-semibold text-base tracking-tight text-white">S-Rotem</span>
+            <span className="font-semibold text-base tracking-tight text-white">SIRAT</span>
           </Link>
 
           {/* Desktop Navigation - Minimal Spacing */}
